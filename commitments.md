@@ -36,6 +36,7 @@ Vid schemalagd lektion tidigare än kl. 12:00 hålls avstämning efter lektionen
 4.3 Commits ska göras minst en gång per dag, före arbetspassets slut.
 
 4.4 Code reviews och merges ska genomföras i samband med möten. Kod får endast merge:as in i huvudgrenen efter att den testats och verifierats på en annan medlems dator.
+***
 
 ## §5 Arbetsfördelning och ansvar
 
