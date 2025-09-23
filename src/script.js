@@ -11,6 +11,7 @@ function getCurrentLocation() {
 function showPosition(position) {
 	const latitude = position.coords.latitude;
 	const longitude = position.coords.longitude;
+	console.log("Din position:", latitude, longitude);
 }
 
 // visar felmeddelande vid brist av geodata
@@ -24,11 +25,12 @@ async function getCoordinates(city) {
 	const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`;
 	const fetchCoords = await fetch(url);
 	const coordData = await fetchCoords.json();
+	
 	// kollar efter resultat på sökning av stad, och returnerar första objektets lon och lat, därav length > 0
 	if (coordData.length > 0) {
 		const latitude = coordData[0].lat;
 		const longitude = coordData[0].lon;
-		console.log(`Latitude: ${latitude}, Longtitude: ${longitude}`);
+		// console.log(`Latitude: ${latitude}, Longtitude: ${longitude}`); Kommenterade ut denna rad pga dublett av koordinater när jag använder fetchBtn
 		return { latitude, longitude };
 	} else {
 		console.log("no results");
@@ -40,3 +42,93 @@ getCoordinates("lagos");
 getCurrentLocation();
 
 // todo, slänga in koordinater i väderapi
+
+/* ====================== DROPDOWN FÖR STADSSÖKNING (+ knapp) ====================== */
+
+const cities = [
+    "Göteborg",
+    "Gävle",
+    "Stockholm",
+    "Malmö",
+    "Uppsala",
+    "Linköping",
+    "Helsingborg",
+    "Örebro",
+    "Västerås",
+    "Karlstad"
+	// etc..
+  ];
+
+  const cityInput = document.querySelector(".cityInput");
+  const dropdown = document.querySelector(".dropdown");
+  const fetchBtn = document.querySelector(".fetchBtn")
+
+  cityInput.addEventListener("input", function() {
+    const query = this.value.toLowerCase(); // Gör sök okänslig till versaler och gemener
+    dropdown.innerHTML = ""; // Rensar tidigare resultat
+
+	// Om fältet är tomt, göm dropdown och avbryt
+    if (query.length === 0) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+	// Jämför stads-alternativ med användarens sök i gemener
+    const filteredCities = cities.filter(function(city) {
+      return city.toLowerCase().indexOf(query) === 0; 
+    });
+
+	// Om inga träffer, göm dropdown och avbryt
+    if (filteredCities.length === 0) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+	// Loopar igenom matchande städer och skapar ett nytt li för varje stad och sätter texten
+    for (let i = 0; i < filteredCities.length; i++) {
+      const li = document.createElement("li");
+      li.textContent = filteredCities[i];
+
+	  // När man klickar på ett förslag så fylls input med stadens namn och gömmer dropdown
+      li.addEventListener("click", async function() {
+        cityInput.value = this.textContent;
+        dropdown.style.display = "none";
+      });
+
+	  // Lägger till <li> i dropdownlistan
+      dropdown.appendChild(li);
+    }
+
+	// Gör dropdownen synlig efter att ha fyllt den med li
+    dropdown.style.display = "block";
+  });
+
+  // Stänger dropdown om man klickar utanför
+  document.addEventListener("click", function(e) {
+    if (!e.target.closest(".search-container")) {
+      dropdown.style.display = "none";
+    }
+  });
+
+  // Hämta plats knapp FUNKTION
+
+  fetchBtn.addEventListener("click", async function() {
+	const city = cityInput.value;
+	
+	// Om ingen stad vald avbryt
+	if (!city) {
+		console.log("Ingen stad vald.");
+		return;
+	}
+
+	const result = await getCoordinates(city);
+
+	if (result) {
+		console.log("Stadens position:", result.latitude, result.longitude);
+	}
+	else {
+		console.log("Ingen träff");
+	}
+  });
+
+  /* ====================== SLUT PÅ DROPDOWN (+ knapp) ====================== */
