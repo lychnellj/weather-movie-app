@@ -7,11 +7,15 @@ function getCurrentLocation() {
 		getCoordinates();
 	}
 }
-// lagrar position
-function showPosition(position) {
+// lagrar position och hämtar väderinfo om browserns geodata är tillgänglig
+async function showPosition(position) {
 	const latitude = position.coords.latitude;
 	const longitude = position.coords.longitude;
 	console.log("Din position:", latitude, longitude);
+	const forecast = await getWeather(latitude, longitude);
+	forecast.forEach(entry => {
+        console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
+    });
 }
 
 // visar felmeddelande vid brist av geodata
@@ -38,10 +42,42 @@ async function getCoordinates(city) {
 	}
 }
 
+  /* ====================== COORDS TO FORECAST ====================== */
+ 
+async function getWeather(latitude, longitude){
+
+  const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m"];
+  const date = new Date();
+	
+  const weatherUrl =`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(",")}&timezone=auto`;
+  const fetchWeather = await fetch(weatherUrl);
+  const weatherData = await fetchWeather.json();
+
+  const timesArray = weatherData.hourly.time;
+
+  const startIndex = timesArray.findIndex(t => new Date(t) >= date);
+
+  const times = timesArray.slice(startIndex - 1, startIndex + 1); 
+  const temps = weatherData.hourly.temperature_2m.slice(startIndex - 1, startIndex + 1); 
+  const precipitation = weatherData.hourly.precipitation.slice(startIndex - 1, startIndex + 1); 
+  const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); // fullösning för tidzoner, se över sen? Förlåt Jenni
+  //placerar respons i objects
+  const forecast = times.map((time, i) =>({
+    time,
+    temperature: temps[i],
+    rainAndSnow: precipitation[i],
+    windSpeed: wind[i],
+  }));
+  console.log("Kommande 2 timmarnas väderprognos: ", forecast);
+  return forecast;
+  
+}
+
+
+
 getCoordinates("lagos");
 getCurrentLocation();
 
-// todo, slänga in koordinater i väderapi
 
 /* ====================== DROPDOWN FÖR STADSSÖKNING (+ knapp) ====================== */
 
@@ -125,6 +161,12 @@ const cities = [
 
 	if (result) {
 		console.log("Stadens position:", result.latitude, result.longitude);
+    
+    const forecast = await getWeather(result.latitude, result.longitude);
+
+    forecast.forEach(entry => {
+      console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
+   });
 	}
 	else {
 		console.log("Ingen träff");
@@ -132,3 +174,4 @@ const cities = [
   });
 
   /* ====================== SLUT PÅ DROPDOWN (+ knapp) ====================== */
+
