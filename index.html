@@ -7,30 +7,36 @@
 		<title>Forecast & Chill</title>
 	</head>
 
-<body>
-    <main class="container">
-        <h1>Forecast & Chill</h1>
-        <div class="locationBox">
-            <label>
-                <span>📍 Plats</span>
-                <div class="search-container">
-                    <input type="text" class="cityInput" placeholder="Sök plats...">
-                    <ul class="dropdown"></ul>
-                    <button class="fetchBtn">Hämta plats</button>
-                </div>
-                <p>VÄLJ EN PLATS SJÄLV DÅ</p>
-            </label>
-
-        </div>
-        <div class="weatherBox">
-            <span>Väder</span>
-        </div>
-        <div class="suggBox">
-            <span>Förslag</span>
-            <button>Nya förslag</button>
-        </div>
-    </main>
-    <script src="src/script.js"></script>
-</body>
-
+	<body>
+		<main class="container">
+			<h1>Forecast & Chill</h1>
+			<div class="locationBox">
+				<label>
+					<span>📍 Plats</span>
+					<div class="search-container">
+						<input type="text" class="cityInput" placeholder="Sök plats..." />
+						<ul class="dropdown"></ul>
+						<button class="fetchBtn">Hämta plats</button>
+					</div>
+				</label>
+			</div>
+			<div class="weatherBox">
+				<span>Väder</span>
+				<table>
+					<tr>
+						<th>Klockslag</th>
+						<th>Temperatur</th>
+						<th>Nederbörd</th>
+						<th>Vind (ms/s)</th>
+					</tr>
+					<tbody class="tableWeatherData"></tbody>
+				</table>
+			</div>
+			<div class="suggBox">
+				<span>Förslag</span>
+				<button>Nya förslag</button>
+			</div>
+		</main>
+		<script src="src/script.js"></script>
+	</body>
 </html>
