@@ -143,3 +143,59 @@ document.addEventListener("DOMContentLoaded", function () {
 	getCurrentLocation();
 });
 
+/* ====================== FUNKTION FÖR POSTER (+ info) ====================== */
+// Testning
+const mockMovies = [
+  {
+  Title: "Inception",
+  Year: "2010",
+  Genre: "Action, Adventure, Sci-Fi",
+  Poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+  imdbID: "tt1375666"
+  },
+  {
+  Title: "It",
+  Year: "2017",
+  Genre: "Horror",
+  Poster: "https://m.media-amazon.com/images/M/MV5BZGZmOTZjNzUtOTE4OS00OGM3LWJiNGEtZjk4Yzg2M2Q1YzYxXkEyXkFqcGc@._V1_SX300.jpg",
+  imdbID: "tt1396484"
+  }
+];
+
+displayMovies(mockMovies);
+//---
+
+function displayMovies(movies) {
+  const container = document.querySelector(".moviesContainer");
+  container.innerHTML = "";
+
+  for (let i = 0; i < movies.length; i++) {
+    const movie = movies[i];
+
+    // Skapar en div för varje film
+    const movieCard = document.createElement("div");
+    movieCard.className = "classMovieCard";
+
+    // Lägger till filmens poster
+    const poster = document.createElement("img");
+    poster.src = movie.Poster;
+    poster.alt = movie.Title + " poster";
+    poster.style.width = "200px";
+
+    // Lägger till filmens titel + år
+    const title = document.createElement("h2");
+    title.textContent = movie.Title + ` (${movie.Year})`;
+
+    // Lägger till filmens genre
+    const genre = document.createElement("h3");
+    genre.textContent = movie.Genre;
+
+    // // Lägger till allt i filmkortet
+    movieCard.appendChild(poster);
+    movieCard.appendChild(title);
+    movieCard.appendChild(genre);
+
+    // Lägger till filmkortet i container
+    container.appendChild(movieCard);
+  }
+}
