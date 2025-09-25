@@ -1,5 +1,5 @@
-import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable } from "./weather-coords.js";
-
+import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable } from "./weatherCoords.js";
+import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
 /* ====================== DROPDOWN FÖR STADSSÖKNING (+ knapp) ====================== */
 
 let cities = [];
@@ -142,3 +142,4 @@ fetchBtn.addEventListener("click", async function () {
 document.addEventListener("DOMContentLoaded", function () {
 	getCurrentLocation();
 });
+
