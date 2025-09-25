@@ -142,4 +142,3 @@ fetchBtn.addEventListener("click", async function () {
 document.addEventListener("DOMContentLoaded", function () {
 	getCurrentLocation();
 });
-

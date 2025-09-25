@@ -3,7 +3,7 @@ export { displayMovie, mayThe4Th, findRandomMovies };
 /* ====================== HITTA FILM ====================================== */
 
 //const som kopplar ihop funktionen findRandomMovies med div suggBox i html
-const newSugg = document.querySelector('.suggBox');
+const newSugg = document.querySelector('.suggBtn');
 
 // startar funktionen findRandomMovies när användaren klickar på knappen
 newSugg.addEventListener('click', findRandomMovies);
@@ -25,6 +25,32 @@ function displayMovie(movies) {
   console.log("Titel:", movie2.title || movie2.name);
   console.log("Poster:", posterUrl2);
   console.log("Beskrivning:", movie2.overview || "Ingen beskrivning tillgänglig.");
+
+  // Visar filmerna på skärmen
+  const container = document.querySelector(".moviesContainer");
+  container.innerHTML = "";
+
+  // Skapar filmkortet
+  function createMovieCard(movie, posterUrl) {
+    const card = document.createElement("div");
+    card.className = "classMovieCard";
+
+    const img = document.createElement("img");
+    img.src = posterUrl;
+    img.alt = movie.title + " poster";
+    img.style.width = "200px";
+
+    const title = document.createElement("h2");
+    title.textContent = movie.title + " " + `(${movie.release_date.slice(0, 4)})`;
+
+    card.appendChild(img);
+    card.appendChild(title);
+
+    return card;
+  }
+
+  container.appendChild(createMovieCard(movie1, posterUrl));
+  container.appendChild(createMovieCard(movie2, posterUrl2));
 }
 
 //kollar om dagens datum är den 4 maj (may the 4th be with you)
