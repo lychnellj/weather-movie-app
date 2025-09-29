@@ -30,8 +30,17 @@ async function showPosition(position) {
 
 // visar felmeddelande vid brist av geodata
 function showError(error) {
-	console.log("Geolocation error:", error.message);
-	//todo skapa html-element som visar att man inte har geolocation på/tillåtet
+	let message;
+	if (error.code === 1) {
+		message = "Du har nekat åtkomst till platsdata";
+	} else if (error.code === 2) {
+		message = "Platsdata kunde inte hämtas.";
+	} else if (error.code === 3) {
+		message = "Tidsgräns för platsdata överskreds.";
+	} else if (error.code === 4) {
+		message = "Okänt fel med platsdata.";
+	}
+	showApiError(message);
 }
 // skapar en span med felmeddelandet vid fel
 function showApiError(message) {
