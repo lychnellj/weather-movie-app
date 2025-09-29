@@ -32,7 +32,7 @@ async function showPosition(position) {
 function showError(error) {
 	let message;
 	if (error.code === 1) {
-		message = "Du har nekat åtkomst till platsdata";
+		message = "Du har nekat åtkomst till platsdata, skriv in din plats manuellt i sökfältet.";
 	} else if (error.code === 2) {
 		message = "Platsdata kunde inte hämtas.";
 	} else if (error.code === 3) {
@@ -71,7 +71,7 @@ async function getCoordinates(city) {
 		}
 	} catch (error) {
 		console.error("Fel vid hämtning av koordinater:", error);
-		showApiError("Kunde inte hämta koordinater för platsen.");
+		showApiError("Kunde inte hämta koordinater för platsen, tjänsten är nere. Försök senare.");
 		return null;
 	}
 }
