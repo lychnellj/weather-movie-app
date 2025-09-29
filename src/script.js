@@ -1,4 +1,4 @@
-import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable } from "./weatherCoords.js";
+import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus } from "./weatherCoords.js";
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
 /* ====================== DROPDOWN FÖR STADSSÖKNING (+ knapp) ====================== */
 
@@ -127,6 +127,7 @@ fetchBtn.addEventListener("click", async function () {
 
 		const weatherBox = document.querySelector(".weatherBox");
 		weatherBox.style.display = "block";
+		renderWeatherStatus(forecast);
 		renderWeatherTable(forecast);
 
 		forecast.forEach((entry) => {
@@ -136,6 +137,7 @@ fetchBtn.addEventListener("click", async function () {
 		console.log("Ingen träff");
 	}
 });
+
 
 /* ====================== SLUT PÅ DROPDOWN (+ knapp + väderrender) ====================== */
 
