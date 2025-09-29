@@ -1,4 +1,4 @@
-export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable };
+export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus };
 
 // hämtar browserns geodata (om tillgänglig)
 function getCurrentLocation() {
@@ -76,11 +76,45 @@ async function getCoordinates(city) {
 	}
 }
 
+//deklarerar väderkoder
+const wCodesMap = new Map ([
+[0, "Soligt/Klart"],
+[1, "Mestadels klart"],
+[2, "Delvis molnigt"],
+[3, "Mulet"],
+[45, "Dimma"],
+[48, "Rimfrostdimma"],
+[51, "Svagt duggregn"],
+[53, "Måttligt duggregn"],
+[55, "Kraftigt duggregn"],
+[56, "Svagt underkylt duggregn"],
+[57, "Kraftigt underkylt duggregn"],
+[61, "Lätt regn"],
+[63, "Måttligt regn"],
+[65, "Kraftigt regn"],
+[66, "Lätt underkylt regn"],
+[67, "Kraftigt underkylt regn"],
+[71, "Lätt snöfall"],
+[73, "Måttligt snöfall"],
+[75, "Kraftigt snöfall"],
+[77, "Kornsnö"],
+[80, "Lätt regnskur"],
+[81, "Måttlig regnskur"],
+[82, "Kraftig regnskur"],
+[85, "Lätta snöbyar"],
+[86, "Kraftiga snöbyar"],
+[95, "Åska"],
+[96, "Åska med milt hagel"],
+[99, "Åska med kraftigt hagel"]
+])
+
+
+
 // gör om koordinater till en prognos
 
 async function getWeather(latitude, longitude) {
 	try {
-		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m"];
+		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m","weathercode"];
 		const date = new Date();
 
 		const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(",")}&timezone=auto`;
@@ -100,12 +134,14 @@ async function getWeather(latitude, longitude) {
 		const temps = weatherData.hourly.temperature_2m.slice(startIndex - 1, startIndex + 1);
 		const precipitation = weatherData.hourly.precipitation.slice(startIndex - 1, startIndex + 1);
 		const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); // fullösning för tidzoner, se över sen? Förlåt Jenni
+		const wCodes = weatherData.hourly.weathercode.slice(startIndex - 1, startIndex + 1);
 		//placerar respons i objects
 		const forecast = times.map((time, i) => ({
 			time,
 			temperature: temps[i],
 			rainAndSnow: precipitation[i],
-			windSpeed: wind[i]
+			windSpeed: wind[i],
+			weatherCodes: wCodes[i]
 		}));
 		console.log("Kommande 2 timmarnas väderprognos: ", forecast);
 		return forecast;
@@ -115,6 +151,26 @@ async function getWeather(latitude, longitude) {
 		return [];
 	}
 }
+// Säger till om det är bra väder
+const goodBadWeatherBox = document.querySelector(".goodBadWeather");
+
+function renderWeatherStatus(forecast) {
+	var wCodes = forecast[0].weatherCodes
+		
+	goodBadWeatherBox.innerHTML = "";
+	if (wCodes>1){
+		goodBadWeatherBox.innerHTML += `
+		Pissigt väder, kolla film >:(
+		`
+	}
+	else {
+		goodBadWeatherBox.innerHTML += `
+		Touch grass noob
+		`
+	}
+}
+
+
 
 /* ====================== Rendera väderdata till HTML ====================== */
 
@@ -130,6 +186,7 @@ function renderWeatherTable(forecast) {
 	  <td>${entry.temperature}°C</td>
 	  <td>${entry.rainAndSnow} mm</td>
 	  <td>${entry.windSpeed} m/s</td>
+	  <td>${wCodesMap.get(entry.weatherCodes)}</td>
 	  </tr>
 	  `;
 		tableWeatherData.innerHTML += rowHtml;
