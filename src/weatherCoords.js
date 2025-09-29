@@ -33,52 +33,78 @@ function showError(error) {
 	console.log("Geolocation error:", error.message);
 	//todo skapa html-element som visar att man inte har geolocation på/tillåtet
 }
+// skapar en span med felmeddelandet vid fel
+function showApiError(message) {
+	weatherBox.style.display = "block";
+	weatherBox.innerHTML = `<span class="error">${message}</span>`;
+}
 
-// callar openstreetmaps API
+// callar openstreetmaps API, lagt i en try-catch ifall något går fel
 async function getCoordinates(city) {
-	const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`;
-	const fetchCoords = await fetch(url);
-	const coordData = await fetchCoords.json();
+	try {
+		const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`;
+		const fetchCoords = await fetch(url);
 
-	// kollar efter resultat på sökning av stad, och returnerar första objektets lon och lat, därav length > 0
-	if (coordData.length > 0) {
-		const latitude = coordData[0].lat;
-		const longitude = coordData[0].lon;
-		// console.log(`Latitude: ${latitude}, Longtitude: ${longitude}`); Kommenterade ut denna rad pga dublett av koordinater när jag använder fetchBtn
-		return { latitude, longitude };
-	} else {
-		console.log("no results");
+		if (!fetchCoords.ok) {
+			throw new Error(`OpenStreetMap API error: ${fetchCoords.status}`);
+		}
+		const coordData = await fetchCoords.json();
+
+		// kollar efter resultat på sökning av stad, och returnerar första objektets lon och lat, därav length > 0
+		if (coordData.length > 0) {
+			const latitude = coordData[0].lat;
+			const longitude = coordData[0].lon;
+			// console.log(`Latitude: ${latitude}, Longtitude: ${longitude}`); Kommenterade ut denna rad pga dublett av koordinater när jag använder fetchBtn
+			return { latitude, longitude };
+		} else {
+			console.log("no results");
+			return null;
+		}
+	} catch (error) {
+		console.error("Fel vid hämtning av koordinater:", error);
+		showApiError("Kunde inte hämta koordinater för platsen.");
 		return null;
 	}
 }
 
-/* ====================== COORDS TO FORECAST ====================== */
+// gör om koordinater till en prognos
 
 async function getWeather(latitude, longitude) {
-	const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m"];
-	const date = new Date();
+	try {
+		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m"];
+		const date = new Date();
 
-	const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(",")}&timezone=auto`;
-	const fetchWeather = await fetch(weatherUrl);
-	const weatherData = await fetchWeather.json();
+		const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(",")}&timezone=auto`;
+		const fetchWeather = await fetch(weatherUrl);
 
-	const timesArray = weatherData.hourly.time;
+		if (!fetchWeather.ok) {
+			throw new Error(`Weather API error: ${fetchWeather.status}`);
+		}
 
-	const startIndex = timesArray.findIndex((t) => new Date(t) >= date);
+		const weatherData = await fetchWeather.json();
 
-	const times = timesArray.slice(startIndex - 1, startIndex + 1);
-	const temps = weatherData.hourly.temperature_2m.slice(startIndex - 1, startIndex + 1);
-	const precipitation = weatherData.hourly.precipitation.slice(startIndex - 1, startIndex + 1);
-	const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); // fullösning för tidzoner, se över sen? Förlåt Jenni
-	//placerar respons i objects
-	const forecast = times.map((time, i) => ({
-		time,
-		temperature: temps[i],
-		rainAndSnow: precipitation[i],
-		windSpeed: wind[i]
-	}));
-	console.log("Kommande 2 timmarnas väderprognos: ", forecast);
-	return forecast;
+		const timesArray = weatherData.hourly.time;
+
+		const startIndex = timesArray.findIndex((t) => new Date(t) >= date);
+
+		const times = timesArray.slice(startIndex - 1, startIndex + 1);
+		const temps = weatherData.hourly.temperature_2m.slice(startIndex - 1, startIndex + 1);
+		const precipitation = weatherData.hourly.precipitation.slice(startIndex - 1, startIndex + 1);
+		const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); // fullösning för tidzoner, se över sen? Förlåt Jenni
+		//placerar respons i objects
+		const forecast = times.map((time, i) => ({
+			time,
+			temperature: temps[i],
+			rainAndSnow: precipitation[i],
+			windSpeed: wind[i]
+		}));
+		console.log("Kommande 2 timmarnas väderprognos: ", forecast);
+		return forecast;
+	} catch (error) {
+		console.error("Fel vid hämtning av väder:", error);
+		showApiError("Kunde inte hämta koordinater för platsen.");
+		return [];
+	}
 }
 
 /* ====================== Rendera väderdata till HTML ====================== */
