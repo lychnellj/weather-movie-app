@@ -1,5 +1,6 @@
 import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus } from "./weatherCoords.js";
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
+import { fetchICS, parseEvents, filterToday, getTodayEvent } from "./pastaCal.js";
 /* ====================== DROPDOWN FÖR STADSSÖKNING (+ knapp) ====================== */
 
 let cities = [];
@@ -138,52 +139,22 @@ fetchBtn.addEventListener("click", async function () {
 	}
 });
 
-
 /* ====================== SLUT PÅ DROPDOWN (+ knapp + väderrender) ====================== */
 
 document.addEventListener("DOMContentLoaded", function () {
 	getCurrentLocation();
 });
 
+async function renderPastafarianCalendar() {
+	const { result, dateString } = await getTodayEvent();
 
-// Pastafarian-calendar
+	const pasContainer = document.querySelector(".pasResult");
 
-(async () => {
-  	const tz = "Europe/Stockholm",
-        date = new Date(),
+	if (result.events.length > 0) {
+		pasContainer.innerHTML = `${dateString} ${result.events.map((e) => e.title)}`;
+	} else {
+		pasContainer.innerHTML = `${dateString} finns inget i Pastafarian-kalendern.`;
+	}
+}
 
-        // Dagens datum formaterad YYYY-MM-DD och tar bort bindestrecken. => YYYYMMDD
-        ymd = new Intl.DateTimeFormat("sv-SE", {
-          timeZone: tz,
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }).format(date).replace(/-/g, ""),
-
-		// Hämtar feed.ics och konverterar filen till en vanlig textsträng. Tar sedan bort radbrytningarna mitt i texten så det blir lättare att söka i den.
-        txt = (await (await fetch("feed.ics")).text()).replace(/\r?\n[ \t]/g, ""),
-
-		// Letar efter alla kalenderhändelser mellan BEGIN:VEVENT och END:VEVENT. Om det inte finns några event, returneras en tom array.
-        event = txt.match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/g) || [],
-
-		// Filtrera ut event som är idag. Letar efter händelsens startdatum t.ex DTSTART:20250929 och matcha med dagens datum. Om det är idag så hämtas texten efter SUMMARY t.ex SUMMARY:Double Entendre Day => Double Entendre Day
-        hits = event
-          .map(b =>
-            (b.match(/DTSTART[^:]*:(\d{8})/) || [])[1] == ymd
-              ? (b.match(/SUMMARY:(.+?)\r?\n/) || [])[1]
-              : null // Om ingen match = null
-          )
-          .filter(Boolean), // Tar bort alla null eller tomma värden. Resultatet blir en lista med dagens händelser.
-
-		// Datumformat, just nu t.ex => "25-09-29"
-        dateString = new Intl.DateTimeFormat("sv-SE", {
-          timeZone: tz,
-          year: "2-digit",
-          month: "2-digit",
-          day: "numeric",
-        }).format(date);
-
-  	document.querySelector(".pasResult").innerHTML = hits[0]
-		? `${dateString} <strong>${hits.join(", ")}</strong>`
-		: `${dateString} finns inget i Pastafarian-kalendern.`;
-})();
+renderPastafarianCalendar();
