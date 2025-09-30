@@ -16,15 +16,15 @@ const tmdbApi = '17caf92753b690ca208f861025042240';
 function displayMovie(movies) {
   const movie1 = movies[0];
   const posterUrl = `https://image.tmdb.org/t/p/w500${movie1.poster_path}`;
-  console.log("Titel:", movie1.title || movie1.name);
-  console.log("Poster:", posterUrl);
-  console.log("Beskrivning:", movie1.overview || "Ingen beskrivning tillgänglig.");
+  // console.log("Titel:", movie1.title || movie1.name);
+  // console.log("Poster:", posterUrl);
+  // console.log("Beskrivning:", movie1.overview || "Ingen beskrivning tillgänglig.");
 
   const movie2 = movies[1];
   const posterUrl2 = `https://image.tmdb.org/t/p/w500${movie2.poster_path}`;
-  console.log("Titel:", movie2.title || movie2.name);
-  console.log("Poster:", posterUrl2);
-  console.log("Beskrivning:", movie2.overview || "Ingen beskrivning tillgänglig.");
+  // console.log("Titel:", movie2.title || movie2.name);
+  // console.log("Poster:", posterUrl2);
+  // console.log("Beskrivning:", movie2.overview || "Ingen beskrivning tillgänglig.");
 
   // Visar filmerna på skärmen
   const container = document.querySelector(".moviesContainer");
@@ -35,16 +35,28 @@ function displayMovie(movies) {
     const card = document.createElement("div");
     card.className = "classMovieCard";
 
+    const title = document.createElement("h2");
+    title.textContent = movie.title + " " + `(${movie.release_date.slice(0, 4)})`;
+
     const img = document.createElement("img");
     img.src = posterUrl;
     img.alt = movie.title + " poster";
     img.style.width = "200px";
 
-    const title = document.createElement("h2");
-    title.textContent = movie.title + " " + `(${movie.release_date.slice(0, 4)})`;
+    // skapar en låda för beskrivningen
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Visa beskrivning";
 
-    card.appendChild(img);
+    const overview = document.createElement("p");
+    overview.textContent = movie.overview || "Ingen beskrivning tillgänglig.";
+    // trycker in summary och overview in i details-taggen
+    details.appendChild(summary);
+    details.appendChild(overview);
+
     card.appendChild(title);
+    card.appendChild(img);
+    card.appendChild(details);
 
     return card;
   }
