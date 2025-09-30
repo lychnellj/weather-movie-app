@@ -1,8 +1,8 @@
 export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus };
-
+import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
 // hämtar browserns geodata (om tillgänglig)
 function getCurrentLocation() {
-	console.log("fetching location...");
+	// console.log("fetching location...");
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(showPosition, showError);
 	} else {
@@ -16,16 +16,17 @@ async function showPosition(position) {
 	const latitude = position.coords.latitude;
 	const longitude = position.coords.longitude;
 
-	console.log("Din position:", latitude, longitude);
+	// console.log("Din position:", latitude, longitude);
 
 	const forecast = await getWeather(latitude, longitude);
 
 	weatherBox.style.display = "block";
 	renderWeatherTable(forecast);
+	renderWeatherStatus(forecast);
 
-	forecast.forEach((entry) => {
-		console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
-	});
+	// forecast.forEach((entry) => {
+	// 	console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
+	// });
 }
 
 // visar felmeddelande vid brist av geodata
@@ -63,7 +64,6 @@ async function getCoordinates(city) {
 		if (coordData.length > 0) {
 			const latitude = coordData[0].lat;
 			const longitude = coordData[0].lon;
-			// console.log(`Latitude: ${latitude}, Longtitude: ${longitude}`); Kommenterade ut denna rad pga dublett av koordinater när jag använder fetchBtn
 			return { latitude, longitude };
 		} else {
 			console.log("no results");
@@ -77,35 +77,35 @@ async function getCoordinates(city) {
 }
 
 //deklarerar väderkoder
-const wCodesMap = new Map ([
-[0, "Soligt/Klart"],
-[1, "Mestadels klart"],
-[2, "Delvis molnigt"],
-[3, "Mulet"],
-[45, "Dimma"],
-[48, "Rimfrostdimma"],
-[51, "Svagt duggregn"],
-[53, "Måttligt duggregn"],
-[55, "Kraftigt duggregn"],
-[56, "Svagt underkylt duggregn"],
-[57, "Kraftigt underkylt duggregn"],
-[61, "Lätt regn"],
-[63, "Måttligt regn"],
-[65, "Kraftigt regn"],
-[66, "Lätt underkylt regn"],
-[67, "Kraftigt underkylt regn"],
-[71, "Lätt snöfall"],
-[73, "Måttligt snöfall"],
-[75, "Kraftigt snöfall"],
-[77, "Kornsnö"],
-[80, "Lätt regnskur"],
-[81, "Måttlig regnskur"],
-[82, "Kraftig regnskur"],
-[85, "Lätta snöbyar"],
-[86, "Kraftiga snöbyar"],
-[95, "Åska"],
-[96, "Åska med milt hagel"],
-[99, "Åska med kraftigt hagel"]
+const wCodesMap = new Map([
+	[0, "Soligt/Klart"],
+	[1, "Mestadels klart"],
+	[2, "Delvis molnigt"],
+	[3, "Mulet"],
+	[45, "Dimma"],
+	[48, "Rimfrostdimma"],
+	[51, "Svagt duggregn"],
+	[53, "Måttligt duggregn"],
+	[55, "Kraftigt duggregn"],
+	[56, "Svagt underkylt duggregn"],
+	[57, "Kraftigt underkylt duggregn"],
+	[61, "Lätt regn"],
+	[63, "Måttligt regn"],
+	[65, "Kraftigt regn"],
+	[66, "Lätt underkylt regn"],
+	[67, "Kraftigt underkylt regn"],
+	[71, "Lätt snöfall"],
+	[73, "Måttligt snöfall"],
+	[75, "Kraftigt snöfall"],
+	[77, "Kornsnö"],
+	[80, "Lätt regnskur"],
+	[81, "Måttlig regnskur"],
+	[82, "Kraftig regnskur"],
+	[85, "Lätta snöbyar"],
+	[86, "Kraftiga snöbyar"],
+	[95, "Åska"],
+	[96, "Åska med milt hagel"],
+	[99, "Åska med kraftigt hagel"]
 ])
 
 
@@ -114,7 +114,7 @@ const wCodesMap = new Map ([
 
 async function getWeather(latitude, longitude) {
 	try {
-		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m","weathercode"];
+		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m", "weathercode"];
 		const date = new Date();
 
 		const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(",")}&timezone=auto`;
@@ -143,7 +143,7 @@ async function getWeather(latitude, longitude) {
 			windSpeed: wind[i],
 			weatherCodes: wCodes[i]
 		}));
-		console.log("Kommande 2 timmarnas väderprognos: ", forecast);
+		// console.log("Kommande 2 timmarnas väderprognos: ", forecast);
 		return forecast;
 	} catch (error) {
 		console.error("Fel vid hämtning av väder:", error);
@@ -155,18 +155,22 @@ async function getWeather(latitude, longitude) {
 const goodBadWeatherBox = document.querySelector(".goodBadWeather");
 
 function renderWeatherStatus(forecast) {
-	var wCodes = forecast[0].weatherCodes
-		
+	var wCodes= forecast[0].weatherCodes;
+	var wCodesTwo = forecast[1].weatherCodes;
+
 	goodBadWeatherBox.innerHTML = "";
-	if (wCodes>1){
+	if (wCodes > 1 || wCodesTwo > 1) {
 		goodBadWeatherBox.innerHTML += `
 		Pissigt väder, kolla film >:(
 		`
+		findRandomMovies();
 	}
 	else {
 		goodBadWeatherBox.innerHTML += `
 		Touch grass noob
 		`
+		const container = document.querySelector(".moviesContainer");
+		container.innerHTML = "";
 	}
 }
 
