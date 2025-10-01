@@ -98,6 +98,20 @@ document.addEventListener("click", function (e) {
     }
 });
 
+cityInput.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        fetchBtn.click();
+    }
+});
+
+// Stänger dropdown om man trycker på esc
+document.addEventListener("keydown", function(e){
+    if (e.key === "Escape"){
+        dropdown.style.display = "none";
+    }
+});
+
 const locationLabel = document.querySelector(".locationLabel");
 const locationError = document.querySelector(".locationError")
 
