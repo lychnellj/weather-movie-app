@@ -1,64 +1,59 @@
 <!DOCTYPE html>
 <html lang="sv">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link href="https://fonts.googleapis.com/css2?family=Coiny" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Sour+Gummy" rel="stylesheet" />
+		<link rel="stylesheet" href="main.css" />
+		<title>Forecast & Chill</title>
+	</head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link href="https://fonts.googleapis.com/css2?family=Coiny" rel="stylesheet" />
-	<link href="https://fonts.googleapis.com/css2?family=Sour+Gummy" rel="stylesheet" />
-	<link rel="stylesheet" href="main.css" />
-	<title>Forecast & Chill</title>
-</head>
-
-<body>
-	<header>
-		<h1>
-			<span class="forecastTxt">Forecast</span><br><span class="andTxt">&</span><span class="chillTxt">Chill</span>
-		</h1>
-	</header>
-	<main class="container">
-		<div class="locationBox">
-			<label>
-				<span class="locationLabel">📍 Plats</span>
-				<div class="locationError"></div>
-				<div class="searchContainer">
-					<div class="innerSearch">
-						<input type="text" class="cityInput" placeholder="Sök plats..."/>
-						<button class="fetchBtn">Hämta plats</button>
+	<body>
+		<header>
+			<h1><span class="forecastTxt">Forecast</span><br /><span class="andTxt">&</span><span class="chillTxt">Chill</span></h1>
+		</header>
+		<main class="container">
+			<div class="locationBox">
+				<label>
+					<span class="locationLabel">📍 Plats</span>
+					<div class="locationError"></div>
+					<div class="searchContainer">
+						<div class="innerSearch">
+							<input type="text" class="cityInput" placeholder="Sök plats..." />
+							<button class="fetchBtn">Hämta plats</button>
+						</div>
+						<ul class="dropdown"></ul>
 					</div>
-					<ul class="dropdown"></ul>
-				</div>
-			</label>
-		</div>
-		<div class="weatherBox">
-			<div>
-				<p class="goodBadWeather"></p>
+				</label>
 			</div>
-			<span>Väder</span>
-			<table>
-				<tr>
-					<th>Klockslag</th>
-					<th>Temperatur</th>
-					<th>Nederbörd</th>
-					<th>Vind (ms/s)</th>
-					<th>Väder</th>
-				</tr>
-				<tbody class="tableWeatherData"></tbody>
-			</table>
-		</div>
-		<div class="suggBox">
-			<div class="moviesContainer"></div>
-			<button class="suggBtn">Nya förslag</button>
-		</div>
-	</main>
-	<footer>
-		<div class="pasBox">
-			<span>Glöm inte dagens högtid:</span>
-			<div class="pasResult"></div>
-			<span>R'amen!</span>
-		</div>
-	</footer>
-	<script type="module" src="src/script.js"></script>
-</body>
-
+			<div class="weatherBox">
+				<table>
+					<tr>
+						<th>Klockslag</th>
+						<th>Temperatur</th>
+						<th>Nederbörd</th>
+						<th>Vind (ms/s)</th>
+						<th>Väder</th>
+					</tr>
+					<tbody class="tableWeatherData"></tbody>
+				</table>
+				<div>
+					<p class="goodBadWeather"></p>
+				</div>
+			</div>
+			<div class="suggBox">
+				<div class="moviesContainer"></div>
+				<button class="suggBtn">Nya förslag</button>
+			</div>
+		</main>
+		<footer>
+			<div class="pasBox">
+				<span>Glöm inte dagens högtid:</span>
+				<div class="pasResult"></div>
+				<span>R'amen!</span>
+			</div>
+		</footer>
+		<script type="module" src="src/script.js"></script>
+	</body>
 </html>

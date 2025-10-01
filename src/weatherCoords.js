@@ -1,8 +1,7 @@
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
-export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus };
+export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus, getCityNameFromCoords };
 // hämtar browserns geodata (om tillgänglig)
 function getCurrentLocation() {
-	// console.log("fetching location...");
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(showPosition, showError);
 	} else {
@@ -11,23 +10,22 @@ function getCurrentLocation() {
 }
 // lagrar position och hämtar väderinfo om browserns geodata är tillgänglig
 const weatherBox = document.querySelector(".weatherBox");
-const locationError = document.querySelector(".locationError")
+const locationError = document.querySelector(".locationError");
 
 async function showPosition(position) {
 	const latitude = position.coords.latitude;
 	const longitude = position.coords.longitude;
 
-	// console.log("Din position:", latitude, longitude);
+	// hämta stadsnamnet och visa det
+	const cityName = await getCityNameFromCoords(latitude, longitude);
+	const locationLabel = document.querySelector(".locationLabel");
+	locationLabel.textContent = `📍 ${cityName}`;
 
 	const forecast = await getWeather(latitude, longitude);
 
 	weatherBox.style.display = "block";
 	renderWeatherTable(forecast);
 	renderWeatherStatus(forecast);
-
-	// forecast.forEach((entry) => {
-	// 	console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
-	// });
 }
 
 // visar felmeddelande vid brist av geodata
@@ -77,6 +75,21 @@ async function getCoordinates(city) {
 	}
 }
 
+// gör om koordinater till stad
+async function getCityNameFromCoords(latitude, longitude) {
+	try {
+		const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+		const cityResponse = await fetch(url);
+		if (!cityResponse.ok) throw new Error("Reverse geocoding failed");
+		const cityData = await cityResponse.json();
+		// försöker visa stad
+		return cityData.address.city || cityData.address.town || cityData.address.village || "Okänd plats";
+	} catch (error) {
+		console.error("Kunde inte hämta statsnamn:", error);
+		return "Okänd plats";
+	}
+}
+
 //deklarerar väderkoder
 const wCodesMap = new Map([
 	[0, "Soligt/Klart"],
@@ -107,7 +120,7 @@ const wCodesMap = new Map([
 	[95, "Åska"],
 	[96, "Åska med milt hagel"],
 	[99, "Åska med kraftigt hagel"]
-])
+]);
 
 // gör om koordinater till en prognos
 async function getWeather(latitude, longitude) {
@@ -141,7 +154,6 @@ async function getWeather(latitude, longitude) {
 			windSpeed: wind[i],
 			weatherCodes: wCodes[i]
 		}));
-		// console.log("Kommande 2 timmarnas väderprognos: ", forecast);
 		return forecast;
 	} catch (error) {
 		console.error("Fel vid hämtning av väder:", error);
@@ -153,20 +165,19 @@ async function getWeather(latitude, longitude) {
 const goodBadWeatherBox = document.querySelector(".goodBadWeather");
 
 function renderWeatherStatus(forecast) {
-	var wCodes= forecast[0].weatherCodes;
+	var wCodes = forecast[0].weatherCodes;
 	var wCodesTwo = forecast[1].weatherCodes;
 
 	goodBadWeatherBox.innerHTML = "";
 	if (wCodes > 1 || wCodesTwo > 1) {
 		goodBadWeatherBox.innerHTML += `
 		Pissigt väder, kolla film >:(
-		`
+		`;
 		findRandomMovies();
-	}
-	else {
+	} else {
 		goodBadWeatherBox.innerHTML += `
 		Touch grass noob
-		`
+		`;
 		const container = document.querySelector(".moviesContainer");
 		container.innerHTML = "";
 	}
@@ -180,12 +191,14 @@ function renderWeatherTable(forecast) {
 
 	forecast.forEach((entry) => {
 		const rowHtml = `
-	  <tr>
+	  <tr class="timeWeather">
 	  <td>${entry.time.slice(11, 16)}</td>
+	  <td>${wCodesMap.get(entry.weatherCodes)}</td>
+	  </tr>
+	  <tr class="timeWeatherParams">
 	  <td>${entry.temperature}°C</td>
 	  <td>${entry.rainAndSnow} mm</td>
 	  <td>${entry.windSpeed} m/s</td>
-	  <td>${wCodesMap.get(entry.weatherCodes)}</td>
 	  </tr>
 	  `;
 		tableWeatherData.innerHTML += rowHtml;
