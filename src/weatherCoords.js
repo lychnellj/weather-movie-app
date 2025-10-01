@@ -122,6 +122,39 @@ const wCodesMap = new Map([
 	[99, "Åska med kraftigt hagel"]
 ]);
 
+// mappar väderkoder till gifar
+const wCodesGif = new Map([
+	[0, "weather1.gif"],
+	[1, "weather2.gif"],
+	[2, "weather2.gif"],
+	[3, "weather3.gif"],
+	[45, "weather3.gif"],
+	[48, "weather3.gif"],
+	[51, "weather4.gif"],
+	[53, "weather4.gif"],
+	[55, "weather4.gif"],
+	[56, "weather4.gif"],
+	[57, "weather4.gif"],
+	[61, "weather4.gif"],
+	[63, "weather5.gif"],
+	[65, "weather5.gif"],
+	[66, "weather5.gif"],
+	[67, "weather5.gif"],
+	[71, "weather6.gif"],
+	[73, "weather6.gif"],
+	[75, "weather6.gif"],
+	[77, "weather6.gif"],
+	[80, "weather4.gif"],
+	[81, "weather5.gif"],
+	[82, "weather5.gif"],
+	[85, "weather6.gif"],
+	[86, "weather6.gif"],
+	[95, "weather7.gif"],
+	[96, "weather7.gif"],
+	[99, "weather7.gif"]
+]);
+
+
 // gör om koordinater till en prognos
 async function getWeather(latitude, longitude) {
 	try {
@@ -168,18 +201,31 @@ function renderWeatherStatus(forecast) {
 	var wCodes = forecast[0].weatherCodes;
 	var wCodesTwo = forecast[1].weatherCodes;
 
+	//mappar gifar till väderkoder
+	const gifFile1 = wCodesGif.get(wCodes) || "default.gif";
+	const gifFile2 = wCodesGif.get(wCodesTwo) || "default.gif";
+	const img1 = document.createElement("img");
+	const img2 = document.createElement("img");
+
+	img1.src = `src/images/${gifFile1}`;
+	img1.alt = `Väder gif`;
+
+
+	img2.src = `src/images/${gifFile2}`;
+	img2.alt = `Väder gif`;
+
 	goodBadWeatherBox.innerHTML = "";
 	if (wCodes > 1 || wCodesTwo > 1) {
-		goodBadWeatherBox.innerHTML += `
-		Pissigt väder, kolla film >:(
-		`;
+		goodBadWeatherBox.innerHTML = `<p>Pissigt väder, kolla film >:(</p>`;
+		goodBadWeatherBox.appendChild(img1);
+		goodBadWeatherBox.appendChild(img2);
 		findRandomMovies();
 	} else {
-		goodBadWeatherBox.innerHTML += `
-		Touch grass noob
-		`;
+		goodBadWeatherBox.innerHTML = `<p>Touch grass noob</p>`;
+		goodBadWeatherBox.appendChild(img1);
+		goodBadWeatherBox.appendChild(img2);
 		const container = document.querySelector(".moviesContainer");
-		container.innerHTML = "";
+		container.innerHTML = ""; // rensar filmer ifall man haft dåligt väder först
 	}
 }
 
