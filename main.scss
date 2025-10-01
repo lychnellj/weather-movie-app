@@ -1,3 +1,9 @@
+@use "vendor/reset";
+@use "src/scss/variables";
+@use "src/scss/base";
+@use "src/scss/tablet";
+@use "src/scss/desktop";    
+
 /* Tillfällig css för att visa dropdown vid sökning av stad */
 .search-container {
 	position: relative;
