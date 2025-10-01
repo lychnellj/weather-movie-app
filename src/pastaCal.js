@@ -35,7 +35,6 @@ async function getTodayEvent() {
 	const date = new Date();
 
 	// Formattera datumet till YYYYMMDD
-
 	const ymd = new Intl.DateTimeFormat("sv-SE", {
 		timeZone: tz,
 		year: "numeric",
