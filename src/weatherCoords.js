@@ -85,7 +85,7 @@ async function getCityNameFromCoords(latitude, longitude) {
 		// försöker visa stad
 		return cityData.address.city || cityData.address.town || cityData.address.village || "Okänd plats";
 	} catch (error) {
-		console.error("Kunde inte hämta statsnamn:", error);
+		console.error("Kunde inte hämta stadsnamn:", error);
 		return "Okänd plats";
 	}
 }
