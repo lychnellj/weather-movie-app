@@ -5,7 +5,7 @@
 ![Skärmdump på vår planering](/assets/week1-planning.png "Sprintplanering vecka 1")
 
 ## Vecka 2
-![Skärmdump på vår planering](vecka1_planning.jpg "Sprintplanering vecka 2")
+![Skärmdump på vår planering](/assets/week2-planning.png "Sprintplanering vecka 2")
 
 ## Vecka 3
 ![Skärmdump på vår planering](vecka1_planning.jpg "Sprintplanering vecka 3")
