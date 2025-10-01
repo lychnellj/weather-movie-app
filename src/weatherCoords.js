@@ -1,5 +1,5 @@
-export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus };
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
+export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus };
 // hämtar browserns geodata (om tillgänglig)
 function getCurrentLocation() {
 	// console.log("fetching location...");
@@ -11,6 +11,7 @@ function getCurrentLocation() {
 }
 // lagrar position och hämtar väderinfo om browserns geodata är tillgänglig
 const weatherBox = document.querySelector(".weatherBox");
+const locationError = document.querySelector(".locationError")
 
 async function showPosition(position) {
 	const latitude = position.coords.latitude;
@@ -45,8 +46,8 @@ function showError(error) {
 }
 // skapar en span med felmeddelandet vid fel
 function showApiError(message) {
-	weatherBox.style.display = "block";
-	weatherBox.innerHTML = `<span class="error">${message}</span>`;
+	locationError.style.display = "block";
+	locationError.innerHTML = `<span class="error">${message}</span>`;
 }
 
 // callar openstreetmaps API, lagt i en try-catch ifall något går fel
@@ -108,10 +109,7 @@ const wCodesMap = new Map([
 	[99, "Åska med kraftigt hagel"]
 ])
 
-
-
 // gör om koordinater till en prognos
-
 async function getWeather(latitude, longitude) {
 	try {
 		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m", "weathercode"];
@@ -174,10 +172,7 @@ function renderWeatherStatus(forecast) {
 	}
 }
 
-
-
 /* ====================== Rendera väderdata till HTML ====================== */
-
 const tableWeatherData = document.querySelector(".tableWeatherData");
 
 function renderWeatherTable(forecast) {
