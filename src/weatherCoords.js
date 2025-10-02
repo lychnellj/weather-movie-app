@@ -208,15 +208,17 @@ const goodBadWeatherBox = document.querySelector(".goodBadWeather");
 const tableWeatherData = document.querySelector(".tableWeatherData")
 
 function renderWeatherTable(forecast) {
-  tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
+	tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
 
-  forecast.forEach((entry) => {
-	const gifFile = wCodesGif.get(entry.weatherCodes) || "default.gif";
-    const blockHtml = `
+	forecast.forEach((entry) => {
+		const gifFile = wCodesGif.get(entry.weatherCodes) || "default.gif";
+		const blockHtml = `
       <div class="hourBlock">
         <div class="hourHeader">
-          <span class="time">${entry.time.slice(11, 16)}</span>
-          <span class="condition">${wCodesMap.get(entry.weatherCodes)}</span>
+		<div class="hourText">
+          	<span class="time">${entry.time.slice(11, 16)}</span>
+          	<span class="condition">${wCodesMap.get(entry.weatherCodes)}</span>
+		  </div>
 		  <img src="src/images/${gifFile}" alt="söt gif av vädret" class="weatherGif" />
         </div>
 		<details>
@@ -227,11 +229,11 @@ function renderWeatherTable(forecast) {
 		</details>
       </div>
     `;
-    tableWeatherData.innerHTML += blockHtml;
-  });
+		tableWeatherData.innerHTML += blockHtml;
+	});
 
-  	const wCodes = forecast[0]?.weatherCodes;
-  	const wCodesTwo = forecast[1]?.weatherCodes;
+	const wCodes = forecast[0]?.weatherCodes;
+	const wCodesTwo = forecast[1]?.weatherCodes;
 	goodBadWeatherBox.innerHTML = "";
 
 	if (wCodes > 1 || wCodesTwo > 1) {
