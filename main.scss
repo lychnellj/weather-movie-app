@@ -5,20 +5,20 @@
 @use "src/scss/desktop";    
 
 /* Tillfällig css för att visa dropdown vid sökning av stad */
-.search-container {
-	position: relative;
-	width: 250px;
-}
+// .search-container {
+// 	position: relative;
+// 	width: 250px;
+// }
 
-.cityInput {
-	width: 100%;
-}
+// .cityInput {
+// 	width: 100%;
+// }
 
 .dropdown {
 	position: absolute;
 	width: 100%;
 	background: white;
-	border: 1px solid #ccc;
+	//border: 1px solid #ccc;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -29,12 +29,13 @@
 	cursor: pointer;
 }
 
-.dropdown li:hover {
-	background-color: #f0f0f0;
-}
-
-/* Döljer väderlådan tills man har en position */
-
-.weatherBox {
+.suggBtn {
+	//döljer förslagen tills filmer visas.
 	display: none;
 }
+
+// /* Döljer väderlådan tills man har en position */
+
+// .weatherBox {
+// 	display: none;
+// }
