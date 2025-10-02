@@ -1,4 +1,4 @@
-import { getCoordinates, getWeather, renderWeatherStatus, renderWeatherTable } from "./weatherCoords.js";
+import { getCoordinates, getWeather, renderWeatherTable } from "./weatherCoords.js";
 export { cleanCityList, loadSwedenCities };
 
 let cities = [];
@@ -49,9 +49,12 @@ const cityInput = document.querySelector(".cityInput");
 const dropdown = document.querySelector(".dropdown");
 const fetchBtn = document.querySelector(".fetchBtn");
 
+let currentIndex = -1;
+
 cityInput.addEventListener("input", function () {
     const query = this.value.toLowerCase(); // Gör sök okänslig till versaler och gemener
     dropdown.innerHTML = ""; // Rensar tidigare resultat
+    currentIndex = -1;
 
     // Om fältet är tomt, göm dropdown och avbryt
     if (query.length === 0) {
@@ -74,6 +77,11 @@ cityInput.addEventListener("input", function () {
     for (let i = 0; i < filteredCities.length; i++) {
         const li = document.createElement("li");
         li.textContent = filteredCities[i];
+
+        li.addEventListener("mouseenter", function() {
+            currentIndex = i;
+            updateHighlight(dropdown.querySelectorAll("li"));
+        });
 
         // När man klickar på ett förslag så fylls input med stadens namn och gömmer dropdown
         li.addEventListener("click", async function () {
@@ -98,10 +106,38 @@ document.addEventListener("click", function (e) {
     }
 });
 
+function updateHighlight(items) {
+    for (let i = 0; i < items.length; i++) {
+        items[i].classList.remove("highlight");
+    }
+    if (currentIndex > -1 && items[currentIndex]) {
+        items[currentIndex].classList.add("highlight");
+    }
+}
+
 cityInput.addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
+    const items = dropdown.querySelectorAll("li");
+
+    if (e.key === "ArrowDown" && items.length) {
         e.preventDefault();
-        fetchBtn.click();
+        currentIndex = (currentIndex + 1) % items.length;
+        updateHighlight(items);
+    }
+    else if (e.key === "ArrowUp" && items.length) {
+        e.preventDefault();
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        updateHighlight(items);
+    }
+    else if (e.key === "Enter") {
+        e.preventDefault();
+        if (currentIndex > -1 && items[currentIndex]) {
+            cityInput.value = items[currentIndex].textContent;
+            dropdown.style.display = "none";
+            currentIndex = -1;
+        }
+        else {
+            fetchBtn.click();
+        }
     }
 });
 
@@ -115,9 +151,11 @@ document.addEventListener("keydown", function(e){
 const locationLabel = document.querySelector(".locationLabel");
 const locationError = document.querySelector(".locationError")
 
+let lastCity = "";
+
 // Hämta plats knapp FUNKTION
 fetchBtn.addEventListener("click", async function () {
-    const city = cityInput.value;
+    const city = cityInput.value || lastCity;
 
     // Om ingen stad vald avbryt
     if (!city) {
@@ -125,7 +163,9 @@ fetchBtn.addEventListener("click", async function () {
         locationError.innerHTML = `<span class="error">Ingen stad vald.</span>`;
         return;
     }
+    lastCity = city;
 	locationLabel.textContent = "📍 " + city;
+
     const result = await getCoordinates(city);
 
     if (result) {
@@ -135,7 +175,7 @@ fetchBtn.addEventListener("click", async function () {
 
         const weatherBox = document.querySelector(".weatherBox");
         weatherBox.style.display = "block";
-        renderWeatherStatus(forecast);
+        // renderWeatherStatus(forecast);
         renderWeatherTable(forecast);
 
         forecast.forEach((entry) => {

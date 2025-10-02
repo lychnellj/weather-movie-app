@@ -1,5 +1,5 @@
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
-export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus, getCityNameFromCoords };
+export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords };
 // hämtar browserns geodata (om tillgänglig)
 function getCurrentLocation() {
 	if (navigator.geolocation) {
@@ -23,9 +23,8 @@ async function showPosition(position) {
 
 	const forecast = await getWeather(latitude, longitude);
 
-	weatherBox.style.display = "block";
+	//weatherBox.style.display = "block";
 	renderWeatherTable(forecast);
-	renderWeatherStatus(forecast);
 }
 
 // visar felmeddelande vid brist av geodata
@@ -154,6 +153,14 @@ const wCodesGif = new Map([
 	[99, "weather7.gif"]
 ]);
 
+const touchGrass = [
+	"Gå ut och känn på barken 🌳",
+	"Gå ut och pilla på en kotte 🌰",
+	"Gå ut och hälsa på solen ☀️",
+	"Gå ut och klappa en sten 🪨",
+	"Gå ut och krama en tall 🌲",
+	"Gå ut och beundra naturen 🍃",
+]
 
 // gör om koordinater till en prognos
 async function getWeather(latitude, longitude) {
@@ -194,59 +201,48 @@ async function getWeather(latitude, longitude) {
 		return [];
 	}
 }
-// Säger till om det är bra väder
+
 const goodBadWeatherBox = document.querySelector(".goodBadWeather");
 
-function renderWeatherStatus(forecast) {
-	var wCodes = forecast[0].weatherCodes;
-	var wCodesTwo = forecast[1].weatherCodes;
+/* ====================== Rendera väderdata till HTML och säger till om det är bra väder ====================== */
+const tableWeatherData = document.querySelector(".tableWeatherData")
 
-	//mappar gifar till väderkoder
-	const gifFile1 = wCodesGif.get(wCodes) || "default.gif";
-	const gifFile2 = wCodesGif.get(wCodesTwo) || "default.gif";
-	const img1 = document.createElement("img");
-	const img2 = document.createElement("img");
+function renderWeatherTable(forecast) {
+  tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
 
-	img1.src = `src/images/${gifFile1}`;
-	img1.alt = `Väder gif`;
+  forecast.forEach((entry) => {
+	const gifFile = wCodesGif.get(entry.weatherCodes) || "default.gif";
+    const blockHtml = `
+      <div class="hourBlock">
+        <div class="hourHeader">
+          <span class="time">${entry.time.slice(11, 16)}</span>
+          <span class="condition">${wCodesMap.get(entry.weatherCodes)}</span>
+		  <img src="src/images/${gifFile}" alt="söt gif av vädret" class="weatherGif" />
+        </div>
+		<details>
+        <summary class="hourParams">Mer info</summary>
+          <p>Temp: ${entry.temperature} °C</p>
+          <p>Nederbörd: ${entry.rainAndSnow} mm</p>
+          <p>Vind: ${entry.windSpeed} m/s</p>
+		</details>
+      </div>
+    `;
+    tableWeatherData.innerHTML += blockHtml;
+  });
 
-
-	img2.src = `src/images/${gifFile2}`;
-	img2.alt = `Väder gif`;
-
+  	const wCodes = forecast[0]?.weatherCodes;
+  	const wCodesTwo = forecast[1]?.weatherCodes;
 	goodBadWeatherBox.innerHTML = "";
+
 	if (wCodes > 1 || wCodesTwo > 1) {
-		goodBadWeatherBox.innerHTML = `<p>Pissigt väder, kolla film >:(</p>`;
-		goodBadWeatherBox.appendChild(img1);
-		goodBadWeatherBox.appendChild(img2);
+		goodBadWeatherBox.innerHTML = `<p>Det är filmväder just nu 📽️🍿</p>`;
 		findRandomMovies();
 	} else {
-		goodBadWeatherBox.innerHTML = `<p>Touch grass noob</p>`;
-		goodBadWeatherBox.appendChild(img1);
-		goodBadWeatherBox.appendChild(img2);
+		const suggBtn = document.querySelector(".suggBtn");
+		if (suggBtn) suggBtn.style.display = "none";
+		const randomGrass = touchGrass[Math.floor(Math.random() * touchGrass.length)];
+		goodBadWeatherBox.innerHTML = `<p>${randomGrass}</p>`;
 		const container = document.querySelector(".moviesContainer");
 		container.innerHTML = ""; // rensar filmer ifall man haft dåligt väder först
 	}
-}
-
-/* ====================== Rendera väderdata till HTML ====================== */
-const tableWeatherData = document.querySelector(".tableWeatherData");
-
-function renderWeatherTable(forecast) {
-	tableWeatherData.innerHTML = ""; //rensa tidigare väderdata
-
-	forecast.forEach((entry) => {
-		const rowHtml = `
-	  <tr class="timeWeather">
-	  <td>${entry.time.slice(11, 16)}</td>
-	  <td>${wCodesMap.get(entry.weatherCodes)}</td>
-	  </tr>
-	  <tr class="timeWeatherParams">
-	  <td>${entry.temperature}°C</td>
-	  <td>${entry.rainAndSnow} mm</td>
-	  <td>${entry.windSpeed} m/s</td>
-	  </tr>
-	  `;
-		tableWeatherData.innerHTML += rowHtml;
-	});
 }

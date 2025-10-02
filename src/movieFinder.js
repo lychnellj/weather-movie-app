@@ -57,6 +57,10 @@ function displayMovie(movies) {
 
 	container.appendChild(createMovieCard(movie1, posterUrl));
 	container.appendChild(createMovieCard(movie2, posterUrl2));
+
+	// visa suggButn när filmer har presenterats så man kan reshuffla
+	const suggBtn = document.querySelector(".suggBtn");
+	if (suggBtn) suggBtn.style.display = "block";
 }
 
 //kollar om dagens datum är den 4 maj (may the 4th be with you)
