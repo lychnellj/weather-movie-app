@@ -1,5 +1,5 @@
-import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords } from "./weatherCoords.js"; //, renderWeatherStatus
-import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
+import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords } from "./weatherCoords.js";
+import { displayMovie, mayThe4Th, findRandomMovies, getPosterUrl } from "./movieFinder.js";
 import { fetchICS, parseEvents, filterToday, getTodayEvent } from "./pastaCal.js";
 import { cleanCityList, loadSwedenCities } from "./manualSearch.js";
 

@@ -1,5 +1,26 @@
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
 export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords };
+
+const DEVELOPMENT = false; // development flag, sätt till true för att testa
+
+// dummy data för väder, dummy är blandat väder så film visas.
+const dummyWeather = [
+	{
+		time: "2025-10-02T12:00",
+		temperature: 18,
+		rainAndSnow: 0,
+		windSpeed: 2,
+		weatherCodes: 0
+	},
+	{
+		time: "2025-10-02T13:00",
+		temperature: 19,
+		rainAndSnow: 0,
+		windSpeed: 3,
+		weatherCodes: 3
+	}
+];
+
 // hämtar browserns geodata (om tillgänglig)
 function getCurrentLocation() {
 	if (navigator.geolocation) {
@@ -23,7 +44,7 @@ async function showPosition(position) {
 
 	const forecast = await getWeather(latitude, longitude);
 
-	//weatherBox.style.display = "block";
+	// weatherBox.style.display = "block";
 	renderWeatherTable(forecast);
 }
 
@@ -33,9 +54,9 @@ function showError(error) {
 	if (error.code === 1) {
 		message = "Du har nekat åtkomst till platsdata, skriv in din plats manuellt i sökfältet.";
 	} else if (error.code === 2) {
-		message = "Platsdata kunde inte hämtas.";
+		message = "Vädret kunde inte bestämmas då platsdata kunde inte hämtas.";
 	} else if (error.code === 3) {
-		message = "Tidsgräns för platsdata överskreds.";
+		message = "Tidsgränen för att hämta platsdata överskreds.";
 	} else if (error.code === 4) {
 		message = "Okänt fel med platsdata.";
 	}
@@ -89,7 +110,7 @@ async function getCityNameFromCoords(latitude, longitude) {
 	}
 }
 
-//deklarerar väderkoder
+// deklarerar väderkoder
 const wCodesMap = new Map([
 	[0, "Soligt/Klart"],
 	[1, "Mestadels klart"],
@@ -153,18 +174,15 @@ const wCodesGif = new Map([
 	[99, "weather7.gif"]
 ]);
 
-const touchGrass = [
-	"Gå ut och känn på barken 🌳",
-	"Gå ut och pilla på en kotte 🌰",
-	"Gå ut och hälsa på solen ☀️",
-	"Gå ut och klappa en sten 🪨",
-	"Gå ut och krama en tall 🌲",
-	"Gå ut och beundra naturen 🍃",
-]
+const touchGrass = ["Gå ut och känn på barken 🌳", "Gå ut och pilla på en kotte 🌰", "Gå ut och hälsa på solen ☀️", "Gå ut och klappa en sten 🪨", "Gå ut och krama en tall 🌲", "Gå ut och beundra naturen 🍃"];
 
 // gör om koordinater till en prognos
 async function getWeather(latitude, longitude) {
 	try {
+		// if-sats för att testa "offlineläge", ändra development const till true om du vill pilla här
+		if (DEVELOPMENT) {
+			return dummyWeather;
+		}
 		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m", "weathercode"];
 		const date = new Date();
 
@@ -186,7 +204,7 @@ async function getWeather(latitude, longitude) {
 		const precipitation = weatherData.hourly.precipitation.slice(startIndex - 1, startIndex + 1);
 		const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); // fullösning för tidzoner, se över sen? Förlåt Jenni
 		const wCodes = weatherData.hourly.weathercode.slice(startIndex - 1, startIndex + 1);
-		//placerar respons i objects
+		// placerar respons i objects
 		const forecast = times.map((time, i) => ({
 			time,
 			temperature: temps[i],
@@ -198,21 +216,21 @@ async function getWeather(latitude, longitude) {
 	} catch (error) {
 		console.error("Fel vid hämtning av väder:", error);
 		showApiError("Kunde inte hämta koordinater för platsen.");
-		return [];
+		return dummyWeather; // returnerar fakedatan om det blir fel
 	}
 }
 
 const goodBadWeatherBox = document.querySelector(".goodBadWeather");
 
 /* ====================== Rendera väderdata till HTML och säger till om det är bra väder ====================== */
-const tableWeatherData = document.querySelector(".tableWeatherData")
+const tableWeatherData = document.querySelector(".tableWeatherData");
 
 function renderWeatherTable(forecast) {
-  tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
+	tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
 
-  forecast.forEach((entry) => {
-	const gifFile = wCodesGif.get(entry.weatherCodes) || "default.gif";
-    const blockHtml = `
+	forecast.forEach((entry) => {
+		const gifFile = wCodesGif.get(entry.weatherCodes) || "default.gif";
+		const blockHtml = `
       <div class="hourBlock">
         <div class="hourHeader">
           <span class="time">${entry.time.slice(11, 16)}</span>
@@ -227,11 +245,11 @@ function renderWeatherTable(forecast) {
 		</details>
       </div>
     `;
-    tableWeatherData.innerHTML += blockHtml;
-  });
+		tableWeatherData.innerHTML += blockHtml;
+	});
 
-  	const wCodes = forecast[0]?.weatherCodes;
-  	const wCodesTwo = forecast[1]?.weatherCodes;
+	const wCodes = forecast[0]?.weatherCodes;
+	const wCodesTwo = forecast[1]?.weatherCodes;
 	goodBadWeatherBox.innerHTML = "";
 
 	if (wCodes > 1 || wCodesTwo > 1) {
