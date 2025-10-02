@@ -1,7 +1,6 @@
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
+import { DEVELOPMENT } from "./config.js";
 export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords };
-
-const DEVELOPMENT = false; // development flag, sätt till true för att testa
 
 // dummy data för väder, dummy är blandat väder så film visas.
 const dummyWeather = [

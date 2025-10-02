@@ -2,6 +2,7 @@ import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWea
 import { displayMovie, mayThe4Th, findRandomMovies, getPosterUrl } from "./movieFinder.js";
 import { fetchICS, parseEvents, filterToday, getTodayEvent } from "./pastaCal.js";
 import { cleanCityList, loadSwedenCities } from "./manualSearch.js";
+import { DEVELOPMENT } from "./config.js";
 
 document.addEventListener("DOMContentLoaded", function () {
 	getCurrentLocation();

@@ -1,7 +1,7 @@
 import { getCoordinates, getWeather, renderWeatherTable } from "./weatherCoords.js";
+import { DEVELOPMENT } from "./config.js";
 export { cleanCityList, loadSwedenCities };
 
-const DEVELOPMENT = false; // development flag, sätt till true för att testa
 let cities = [];
 
 const dummyCities = ["Stockholm", "Göteborg", "Malmö", "Uppsala", "Västerås"];

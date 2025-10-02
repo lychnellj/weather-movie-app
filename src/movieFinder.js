@@ -1,8 +1,8 @@
+import { DEVELOPMENT } from "./config.js";
 export { displayMovie, mayThe4Th, findRandomMovies, getPosterUrl };
 
 // dummy data
 
-const DEVELOPMENT = false; // development flag, sätt till true för att testa
 const dummyMovies = [
 	{
 		title: "Dummy Movie 1",
