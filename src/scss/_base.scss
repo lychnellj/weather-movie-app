@@ -1,7 +1,6 @@
 @use "./variables";
 
 /* ----------Bakgrund--------------------- */
-
 body {
     background: linear-gradient(to bottom,
             variables.$basePink,
@@ -9,6 +8,9 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     font-family: "comic sans ms", sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* ----------Header--------------------- */
@@ -58,7 +60,8 @@ header::before {
 
 main {
     line-height: 1.5;
-    padding: 20px;
+    padding: variables.$basePadding;
+    flex: 1;
 }
 
 /* ----------Sökruta--------------------- */
@@ -73,13 +76,13 @@ main {
         width: 100%;
         background: darken(variables.$fontBlue, 10%);
         font-family: variables.$secondaryFont, 'comic sans ms', sans-serif;
-        color: white;
-        border-radius: 20px;
+        color: variables.$defaultTextColor;
+        border-radius: variables.$baseBorderRadius;
         box-shadow: variables.$boxShadow;
         text-shadow: variables.$textShadow;
         font-size: 1.5rem;
         font-weight: bold;
-        color: white;
+        padding-left: variables.$basePadding / 2;
     }
 
     .searchContainer {
@@ -107,7 +110,7 @@ main {
             background: white;
             color: black;
             box-shadow: variables.$boxShadow;
-            margin-top: 10px;
+            margin-top: variables.$baseMargin;
         }
     }
 
@@ -115,21 +118,21 @@ main {
 
 /* ----------Väderdisplay--------------------- */
 .weatherBox {
-    
+    display: flex;
+    flex-direction: column;
+    // gap: variables.$baseMargin;
 }
 
     .tableWeatherData {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        width: 100%;
-
-    .hourBlock {
         width: 100%;
         background: variables.$basePink;
-        border-radius: 20px;
-        color: white;
+        border-radius: variables.$baseBorderRadius / 2;
+        color: variables.$defaultTextColor;
         text-shadow: variables.$textShadow;
+        box-shadow: variables.$boxShadow;
+        margin-bottom: variables.$baseMargin * 2;
 
         .hourHeader {
             display: grid;
@@ -145,13 +148,14 @@ main {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                font-size: 1.2rem;
+                font-size: 1.5rem;
                 padding-left: 10px;
 
             }
             .condition {
                 display: block;
                 padding-left: 10px;
+                font-size: 1.2rem;
 
             }
         }
@@ -159,23 +163,27 @@ main {
         details {
             background-color: variables.$fontPink;
             font-size: 0.9rem;
-            border-radius: 10px;
+            border-radius: variables.$baseBorderRadius / 2;
             padding: 3px 8px 3px 8px;
         }
 
     }
-}
+
 
 .goodBadWeather {
     font-family: variables.$secondaryFont, 'comic sans ms', sans-serif;
-    color: white;
+    color: variables.$defaultTextColor;
     text-shadow: variables.$textShadow;
     font-size: 1.4rem;
     text-align: center;
     background-color: darken(variables.$fontBlue, 10%);
-    border-radius: 20px;
+    border-radius: variables.$baseBorderRadius;
     box-shadow: variables.$boxShadow;
-    padding: 10px;
+    padding: 5px;
+}
+
+.goodBadWeather.hidden {
+    display: none;
 }
 
 
@@ -183,45 +191,51 @@ main {
 /* ----------Filmdisplay--------------------- */
 
 .suggBox {
-    margin-top: 20px;
+    margin-top: variables.$baseMargin;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
 
     button {
-        margin-top: 0;
-        margin-bottom: 40px;
+        margin-bottom: variables.$baseMargin * 4;
     }
 
     .moviesContainer {
+        display: flex;
+        flex-direction: column;
+        
         .classMovieCard {
             background-color: darken(variables.$fontBlue, 10%);
             padding: 20px;
-            border-radius: 20px;
+            border-radius: variables.$baseBorderRadius;
             box-shadow: variables.$boxShadow;
-            color: white;
-            margin: 20px;
+            color: variables.$defaultTextColor;
+            margin-top: variables.$baseMargin;
+            margin-bottom: variables.$baseMargin;
         }
 
         h2 {
             font-family: variables.$secondaryFont, 'comic sans ms', sans-serif;
             font-size: 2rem;
             line-height: 1;
-            margin-bottom: 10px;
+            margin-bottom: variables.$baseMargin;
             text-shadow: variables.$textShadow;
         }
 
         img {
-            border-radius: 10px;
+            border-radius: variables.$baseBorderRadius / 2;
             border: 4px solid darken(variables.$fontPink, 3%);
         }
 
         details {
             background: variables.$fontPink;
             border: 4px solid darken(variables.$fontPink, 3%);
-            border-radius: 1rem;
+            border-radius: variables.$baseBorderRadius / 2;
             box-shadow: variables.$boxShadow;
+            p{
+                text-shadow: variables.$textShadow;
+            }
         }
 
         summary {
@@ -232,19 +246,19 @@ main {
             font-weight: bold;
             font-size: 1.2rem;
             text-shadow: variables.$textShadow;
-            color: white;
+            color: variables.$defaultTextColor;
             position: relative;
             user-select: none;
         }
 
-        summary::after {
+        summary::before {
             content: "✨";
             position: absolute;
-            right: 1rem;
+            left: 1rem;
             transition: transform 0.3s ease;
         }
 
-        details[open] summary::after {
+        details[open] summary::before {
             transform: rotate(180deg);
         }
     }
@@ -263,7 +277,7 @@ button {
     cursor: pointer;
     transition: all 0.3s ease;
     background: variables.$fontPink;
-    color: white;
+    color: variables.$defaultTextColor;
     box-shadow: variables.$boxShadow;
     margin-top: 10px;
 }
@@ -286,11 +300,13 @@ footer {
         text-align: center;
         background: darken(variables.$fontBlue, 10%);
         font-family: variables.$secondaryFont, 'comic sans ms', sans-serif;
-        color: white;
-        border-radius: 20px;
+        color: variables.$defaultTextColor;
+        border-radius: variables.$baseBorderRadius;
         box-shadow: variables.$boxShadow;
-        padding: 20px;
-        //max-width: 400px;
+        padding: variables.$basePadding;
+        width: 85%;
+        max-width: 900px;
+        margin: 0 auto;
         text-shadow: variables.$textShadow;
 
         span {

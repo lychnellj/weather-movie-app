@@ -203,6 +203,7 @@ async function getWeather(latitude, longitude) {
 		const precipitation = weatherData.hourly.precipitation.slice(startIndex - 1, startIndex + 1);
 		const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); // fullösning för tidzoner, se över sen? Förlåt Jenni
 		const wCodes = weatherData.hourly.weathercode.slice(startIndex - 1, startIndex + 1);
+
 		// placerar respons i objects
 		const forecast = times.map((time, i) => ({
 			time,
@@ -226,11 +227,17 @@ const tableWeatherData = document.querySelector(".tableWeatherData");
 
 function renderWeatherTable(forecast) {
 	tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
+	goodBadWeatherBox.classList.add("hidden"); // lägger till hidden classen som default för goodbadweatherbox
+	let entry = forecast[0];
+	// jämför väderkoder och assignar största värdet (sämsta vädret) till entry variabeln och printar den enbart
+	if (forecast.length > 1 && forecast[1].weatherCodes >= entry.weatherCodes){
+		entry = forecast[1];
+		console.log(entry);
+	}
 
-	forecast.forEach((entry) => {
+	if(entry) {
 		const gifFile = wCodesGif.get(entry.weatherCodes) || "default.gif";
 		const blockHtml = `
-      <div class="hourBlock">
         <div class="hourHeader">
 		<div class="hourText">
           	<span class="time">${entry.time.slice(11, 16)}</span>
@@ -244,19 +251,19 @@ function renderWeatherTable(forecast) {
           <p>Nederbörd: ${entry.rainAndSnow} mm</p>
           <p>Vind: ${entry.windSpeed} m/s</p>
 		</details>
-      </div>
     `;
 		tableWeatherData.innerHTML += blockHtml;
-	});
+	};
 
-	const wCodes = forecast[0]?.weatherCodes;
-	const wCodesTwo = forecast[1]?.weatherCodes;
+	const wCodes = entry?.weatherCodes;
 	goodBadWeatherBox.innerHTML = "";
 
-	if (wCodes > 1 || wCodesTwo > 1) {
+	if (wCodes > 2) {
+		goodBadWeatherBox.classList.remove("hidden");
 		goodBadWeatherBox.innerHTML = `<p>Det är filmväder just nu 📽️🍿</p>`;
 		findRandomMovies();
 	} else {
+		goodBadWeatherBox.classList.remove("hidden");
 		const suggBtn = document.querySelector(".suggBtn");
 		if (suggBtn) suggBtn.style.display = "none";
 		const randomGrass = touchGrass[Math.floor(Math.random() * touchGrass.length)];
