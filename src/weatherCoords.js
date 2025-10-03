@@ -55,7 +55,7 @@ function showError(error) {
 	} else if (error.code === 2) {
 		message = "Vädret kunde inte bestämmas då platsdata kunde inte hämtas.";
 	} else if (error.code === 3) {
-		message = "Tidsgränen för att hämta platsdata överskreds.";
+		message = "Tidsgränsen för att hämta platsdata överskreds.";
 	} else if (error.code === 4) {
 		message = "Okänt fel med platsdata.";
 	}

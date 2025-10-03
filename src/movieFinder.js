@@ -19,7 +19,7 @@ const dummyMovies = [
 ];
 /* ====================== HITTA FILM ====================================== */
 
-// const som kopplar ihop funktionen findRandomMovies med div suggBox i html
+// const som kopplar ihop funktionen findRandomMovies med button suggBtn i html
 const newSugg = document.querySelector(".suggBtn");
 
 // startar funktionen findRandomMovies när användaren klickar på knappen
