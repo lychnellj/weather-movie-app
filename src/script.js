@@ -1,8 +1,15 @@
 import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords } from "./weatherCoords.js";
-import { displayMovie, mayThe4Th, findRandomMovies, getPosterUrl } from "./movieFinder.js";
+import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
 import { fetchICS, parseEvents, filterToday, getTodayEvent } from "./pastaCal.js";
 import { cleanCityList, loadSwedenCities } from "./manualSearch.js";
-import { DEVELOPMENT } from "./config.js";
+
+
+window.addEventListener("DOMContentLoaded", () =>{
+	const audio = document.getElementById("startUpSound");
+	if (audio)
+		audio.volume = 0.1;
+		audio.play().catch(() => {});
+});
 
 document.addEventListener("DOMContentLoaded", function () {
 	getCurrentLocation();
