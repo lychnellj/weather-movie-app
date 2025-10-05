@@ -46,28 +46,19 @@
 
     .weatherBox {
         .tableWeatherData {
-            display: grid;
-            grid-template-columns: 1fr;
-            width: 100%;
-            //align-self: center;
-            flex: 1;
-            background: none;
-            box-shadow: none;
-            //background: variables.$basePink;
-            background: linear-gradient(to right, variables.$basePink 40%, variables.$fontBlue);
+            background: variables.$basePink;
 
             .hourHeader {
-                height: 200px;
-                margin: 0;
 
                 .weatherGif {
-                    width: 75%;
-                    height: auto;
+                    align-self: center;
+                    height: 200px;
+                    width: auto;
 
                 }
 
                 .time {
-                    font-size: 4rem;
+                    font-size: 3.5rem;
                     margin-left: variables.$baseMargin * 4;
 
                 }
@@ -79,7 +70,7 @@
             }
 
             details {
-                width: 50%;
+                //width: 50%;
                 font-size: 1.5rem;
             }
         }
@@ -157,11 +148,15 @@
     }
 
     footer {
-        font-size: 2rem;
         
         .pasBox {
+            
             span {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+            }
+            .pasResult {
+                font-size: 2rem;
+
             }
         }
     }
