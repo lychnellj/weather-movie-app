@@ -1,4 +1,4 @@
-import { getCoordinates, getWeather, renderWeatherTable } from "./weatherCoords.js";
+import { getCoordinates, getWeather, renderWeatherTable, getPriorityWeather } from "./weatherCoords.js";
 import { DEVELOPMENT } from "./config.js";
 export { cleanCityList, loadSwedenCities };
 
@@ -182,15 +182,16 @@ fetchBtn.addEventListener("click", async function () {
 		console.log("Stadens position:", result.latitude, result.longitude);
 
 		const forecast = await getWeather(result.latitude, result.longitude);
+		const priorityEntry = getPriorityWeather(forecast)
 
 		const weatherBox = document.querySelector(".weatherBox");
-		weatherBox.style.display = "block";
+		//weatherBox.style.display = "block";
 		// renderWeatherStatus(forecast);
-		renderWeatherTable(forecast);
+		renderWeatherTable(priorityEntry);
 
-		forecast.forEach((entry) => {
-			console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
-		});
+		// forecast.forEach((entry) => {
+		// 	console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
+		// });
 	} else {
 		console.log("Ingen träff");
 	}

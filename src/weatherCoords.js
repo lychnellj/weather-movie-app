@@ -1,6 +1,6 @@
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
 import { DEVELOPMENT } from "./config.js";
-export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords };
+export { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords, getPriorityWeather };
 
 // dummy data för väder, dummy är blandat väder så film visas.
 const dummyWeather = [
@@ -42,9 +42,10 @@ async function showPosition(position) {
 	locationLabel.textContent = `📍 ${cityName}`;
 
 	const forecast = await getWeather(latitude, longitude);
-
+	const priorityEntry = getPriorityWeather(forecast)
 	// weatherBox.style.display = "block";
-	renderWeatherTable(forecast);
+
+	renderWeatherTable(priorityEntry);
 }
 
 // visar felmeddelande vid brist av geodata
@@ -138,7 +139,8 @@ const wCodesMap = new Map([
 	[86, "Kraftiga snöbyar"],
 	[95, "Åska"],
 	[96, "Åska med milt hagel"],
-	[99, "Åska med kraftigt hagel"]
+	[99, "Åska med kraftigt hagel"],
+	[999, "Hård vind"]
 ]);
 
 // mappar väderkoder till gifar
@@ -185,7 +187,7 @@ async function getWeather(latitude, longitude) {
 		const hourlyVars = ["temperature_2m", "precipitation", "wind_speed_10m", "weathercode"];
 		const date = new Date();
 
-		const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(",")}&timezone=auto`;
+		const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(",")}&wind_speed_unit=ms&timezone=auto`;
 		const fetchWeather = await fetch(weatherUrl);
 
 		if (!fetchWeather.ok) {
@@ -225,37 +227,47 @@ const goodBadWeatherBox = document.querySelector(".goodBadWeather");
 /* ====================== Rendera väderdata till HTML och säger till om det är bra väder ====================== */
 const tableWeatherData = document.querySelector(".tableWeatherData");
 
-function renderWeatherTable(forecast) {
+function getPriorityWeather(forecast) {
+	//Går igenom listan av forecasts (...), gör en lista av windSpeeds, kollar största värdet på windSpeed 
+	const maxWindSpeed = Math.max(...forecast.map(f => f.windSpeed));
+	if (maxWindSpeed > 14) {
+		//returnerar forecasten med högst windSpeed om windSpeed > 1
+		return forecast.find(f => f.windSpeed === maxWindSpeed);
+	}
+	const maxWeatherCode = Math.max(...forecast.map(f => f.weatherCodes));
+	return forecast.find(f => f.weatherCodes === maxWeatherCode)
+}
+
+function renderWeatherTable(priorityEntry) {
 	tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
 	goodBadWeatherBox.classList.add("hidden"); // lägger till hidden classen som default för goodbadweatherbox
-	let entry = forecast[0];
-	// jämför väderkoder och assignar största värdet (sämsta vädret) till entry variabeln och printar den enbart
-	if (forecast.length > 1 && forecast[1].weatherCodes >= entry.weatherCodes){
-		entry = forecast[1];
-		console.log(entry);
-	}
 
-	if(entry) {
-		const gifFile = wCodesGif.get(entry.weatherCodes) || "default.gif";
+	if(priorityEntry) {
+		let gifFile = wCodesGif.get(priorityEntry.weatherCodes) || "default.gif"; 
+		if (priorityEntry.windSpeed > 14) {
+			gifFile = "weather8.gif";
+			priorityEntry.weatherCodes = 999;
+		}
+		console.log(priorityEntry)
 		const blockHtml = `
         <div class="hourHeader">
 		<div class="hourText">
-          	<span class="time">${entry.time.slice(11, 16)}</span>
-          	<span class="condition">${wCodesMap.get(entry.weatherCodes)}</span>
+          	<span class="time">${priorityEntry.time.slice(11, 16)}</span>
+          	<span class="condition">${wCodesMap.get(priorityEntry.weatherCodes)}</span>
 		  </div>
 		  <img src="src/images/${gifFile}" alt="söt gif av vädret" class="weatherGif" />
         </div>
 		<details>
         <summary class="hourParams">Mer info</summary>
-          <p>Temp: ${entry.temperature} °C</p>
-          <p>Nederbörd: ${entry.rainAndSnow} mm</p>
-          <p>Vind: ${entry.windSpeed} m/s</p>
+          <p>Temp: ${priorityEntry.temperature} °C</p>
+          <p>Nederbörd: ${priorityEntry.rainAndSnow} mm</p>
+          <p>Vind: ${priorityEntry.windSpeed} m/s</p>
 		</details>
     `;
 		tableWeatherData.innerHTML += blockHtml;
 	};
 
-	const wCodes = entry?.weatherCodes;
+	const wCodes = priorityEntry?.weatherCodes;
 	goodBadWeatherBox.innerHTML = "";
 
 	if (wCodes > 2) {
