@@ -1,0 +1,162 @@
+@use "./variables";
+
+@media (min-width: 768px) {
+
+    /* ----------Sökruta--------------------- */
+
+    .locationBox {
+        .locationLabel {
+            width: fit-content;
+            max-width: 100%;
+            font-size: 2rem;
+            padding-right: 30px;
+            margin-bottom: variables.$baseMargin;
+            
+        }
+
+        .locationError{
+            font-size: 2rem;
+            justify-content: center;
+        }
+
+        .searchContainer {
+            .innerSearch {
+                .fetchBtn {
+                    width: 25%;
+                    padding: variables.$basePadding/2 0;
+                    font-size: 1.5rem;
+                }
+            }
+
+            .cityInput {
+                padding: variables.$basePadding/2 12px;
+                font-size: 1.5rem;
+            }
+        }
+    }
+
+    .dropdown {
+        border-radius: variables.$baseBorderRadius;
+
+        li {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* ----------Väderdisply--------------------- */
+
+    .weatherBox {
+        .tableWeatherData {
+            background: variables.$basePink;
+
+            .hourHeader {
+                .weatherGif {
+                    align-self: center;
+                    height: 200px;
+                    width: auto;
+
+                }
+
+                .time {
+                    font-size: 3.5rem;
+                    margin-left: variables.$baseMargin * 4;
+
+                }
+
+                .condition {
+                    font-size: 2rem;
+                    margin-left: variables.$baseMargin * 4;
+                }
+            }
+
+            details {
+                font-size: 1.5rem;
+            }
+        }
+
+        .goodBadWeather {
+            font-size: 3rem;
+            flex: 1;
+            height: 220px;
+            align-content: center;
+            justify-content: center;
+            border-radius: variables.$baseBorderRadius / 2;
+            margin: 0;
+        }
+    }
+
+    /* ----------Filmdisplay--------------------- */
+    .suggBox {
+        .moviesContainer {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: variables.$baseMargin * 3;
+            box-sizing: border-box;
+            margin: auto;
+            width: 100%;
+
+            margin-bottom: variables.$baseMargin * 4;
+
+            .classMovieCard {
+                align-self: stretch;
+                width: 100%;
+                min-height: 350px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                height: 100%;
+
+                h2 {
+                    word-break: break-word;
+                    overflow-wrap: break-word;
+                    width: 100%;
+                    margin-bottom: variables.$baseMargin * 2;
+                    flex: 0 0 100px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                }
+
+                img {
+                    flex: 0 0 200px;
+                }
+
+                details {
+                    margin-top: auto;
+                    min-width: 70%;
+                }
+            }
+        }
+
+        /* ----------Sökruta--------------------- */
+        .locationBox {
+            .searchContainer {
+                .innerSearch {
+                    flex-direction: row; 
+                }
+            }
+        }
+
+        .suggBtn {
+            width: 200px;
+            height: 75px;
+            font-size: 1.5rem;
+            align-self: center;
+        }
+    }
+
+    footer {
+        .pasBox {
+            span {
+                font-size: 1.5rem;
+            }
+
+            .pasResult {
+                font-size: 2rem;
+
+            }
+        }
+    }
+
+}

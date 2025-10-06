@@ -1,189 +1,47 @@
-import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, renderWeatherStatus } from "./weatherCoords.js";
+import { getCurrentLocation, showPosition, getCoordinates, getWeather, renderWeatherTable, getCityNameFromCoords } from "./weatherCoords.js";
 import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
-/* ====================== DROPDOWN FÖR STADSSÖKNING (+ knapp) ====================== */
+import { fetchICS, parseEvents, filterToday, getTodayEvent } from "./pastaCal.js";
+import { cleanCityList, loadSwedenCities } from "./manualSearch.js";
 
-let cities = [];
-
-function cleanCityList(cities) {
-	return (
-		cities
-			// Går igenom varje stad i listan
-			.filter(function (name) {
-				const lower = name.toLowerCase();
-
-				// Tar bort städer som innehåller "kommun"
-				if (lower.indexOf("kommun") !== -1) {
-					// "!== -1" = "om vi hittade ordet 'kommun'"
-					return false;
-				}
-
-				// Tar bort städer som innehåller "ae" eller "oe"
-				if (lower.indexOf("ae") !== -1 || lower.indexOf("oe") !== -1) {
-					return false;
-				}
-
-				// Annars behåll namnet
-				return true;
-			})
-	);
-}
-
-(function () {
-	// IIFE så att koden körs direkt utan att behöva kallas
-	function loadSwedenCities() {
-		// API-anropet
-		fetch("https://countriesnow.space/api/v0.1/countries/cities", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ country: "Sweden" })
-		})
-			.then(function (res) {
-				return res.json();
-			}) // Omvandlar res till json
-			// Kollar om json.data är en Array, om det är en lista kör cleanCityList()
-			.then(function (json) {
-				if (json && Array.isArray(json.data)) {
-					cities = cleanCityList(json.data);
-				} else {
-					console.error("Oväntat API-svar:", json);
-				}
-			});
-	}
-	// Kör loadSwedenCities endast när sidan är färdigladdad
-	if (document.readyState === "loading") {
-		document.addEventListener("DOMContentLoaded", loadSwedenCities);
-	} else {
-		loadSwedenCities();
-	}
-})();
-
-const cityInput = document.querySelector(".cityInput");
-const dropdown = document.querySelector(".dropdown");
-const fetchBtn = document.querySelector(".fetchBtn");
-
-cityInput.addEventListener("input", function () {
-	const query = this.value.toLowerCase(); // Gör sök okänslig till versaler och gemener
-	dropdown.innerHTML = ""; // Rensar tidigare resultat
-
-	// Om fältet är tomt, göm dropdown och avbryt
-	if (query.length === 0) {
-		dropdown.style.display = "none";
-		return;
-	}
-
-	// Jämför stads-alternativ med användarens sök i gemener
-	const filteredCities = cities.filter(function (city) {
-		return city.toLowerCase().indexOf(query) === 0;
-	});
-
-	// Om inga träffer, göm dropdown och avbryt
-	if (filteredCities.length === 0) {
-		dropdown.style.display = "none";
-		return;
-	}
-
-	// Loopar igenom matchande städer och skapar ett nytt li för varje stad och sätter texten
-	for (let i = 0; i < filteredCities.length; i++) {
-		const li = document.createElement("li");
-		li.textContent = filteredCities[i];
-
-		// När man klickar på ett förslag så fylls input med stadens namn och gömmer dropdown
-		li.addEventListener("click", async function () {
-			cityInput.value = this.textContent;
-			dropdown.style.display = "none";
-		});
-
-		// Lägger till <li> i dropdownlistan
-		dropdown.appendChild(li);
-	}
-
-	// Gör dropdownen synlig efter att ha fyllt den med li
-	dropdown.style.display = "block";
+window.addEventListener("DOMContentLoaded", () =>{
+	const audio = document.getElementById("startUpSound");
+	if (audio)
+		audio.volume = 0.1;
+		audio.play().catch(() => {});
 });
-
-// Stänger dropdown om man klickar utanför
-document.addEventListener("click", function (e) {
-	if (!e.target.closest(".search-container")) {
-		dropdown.style.display = "none";
-	}
-});
-
-// Hämta plats knapp FUNKTION
-
-fetchBtn.addEventListener("click", async function () {
-	const city = cityInput.value;
-
-	// Om ingen stad vald avbryt
-	if (!city) {
-		console.log("Ingen stad vald.");
-		return;
-	}
-	const result = await getCoordinates(city);
-
-	if (result) {
-		console.log("Stadens position:", result.latitude, result.longitude);
-
-		const forecast = await getWeather(result.latitude, result.longitude);
-
-		const weatherBox = document.querySelector(".weatherBox");
-		weatherBox.style.display = "block";
-		renderWeatherStatus(forecast);
-		renderWeatherTable(forecast);
-
-		forecast.forEach((entry) => {
-			console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
-		});
-	} else {
-		console.log("Ingen träff");
-	}
-});
-
-
-/* ====================== SLUT PÅ DROPDOWN (+ knapp + väderrender) ====================== */
 
 document.addEventListener("DOMContentLoaded", function () {
 	getCurrentLocation();
+	loadSwedenCities();
 });
 
+async function renderPastafarianCalendar() {
+	const { result, dateString } = await getTodayEvent();
 
-// Pastafarian-calendar
+	const pasContainer = document.querySelector(".pasResult");
 
-(async () => {
-  	const tz = "Europe/Stockholm",
-        date = new Date(),
+	if (result.events.length > 0) {
+		pasContainer.innerHTML = `${result.events.map((e) => e.title)}`;
+	} else {
+		pasContainer.innerHTML = `${dateString} finns inget i Pastafarian-kalendern.`;
+	}
+}
 
-        // Dagens datum formaterad YYYY-MM-DD och tar bort bindestrecken. => YYYYMMDD
-        ymd = new Intl.DateTimeFormat("sv-SE", {
-          timeZone: tz,
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }).format(date).replace(/-/g, ""),
+renderPastafarianCalendar();
 
-		// Hämtar feed.ics och konverterar filen till en vanlig textsträng. Tar sedan bort radbrytningarna mitt i texten så det blir lättare att söka i den.
-        txt = (await (await fetch("feed.ics")).text()).replace(/\r?\n[ \t]/g, ""),
+// ändrar details-taggar så dom öppnas automatiskt vid desktopläge
+function openDetails() {
+	const isDesktop = window.matchMedia('(min-width: 1025px)').matches;
+	document.querySelectorAll('details').forEach(details => {
+		details.open = isDesktop;
+	});
+}
 
-		// Letar efter alla kalenderhändelser mellan BEGIN:VEVENT och END:VEVENT. Om det inte finns några event, returneras en tom array.
-        event = txt.match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/g) || [],
+window.addEventListener('resize', openDetails);
+window.addEventListener('DOMContentLoaded', openDetails);
+// kollar om ändringar sker och kör openDetails
+const observer = new MutationObserver(() => {
+	openDetails();
+});
 
-		// Filtrera ut event som är idag. Letar efter händelsens startdatum t.ex DTSTART:20250929 och matcha med dagens datum. Om det är idag så hämtas texten efter SUMMARY t.ex SUMMARY:Double Entendre Day => Double Entendre Day
-        hits = event
-          .map(b =>
-            (b.match(/DTSTART[^:]*:(\d{8})/) || [])[1] == ymd
-              ? (b.match(/SUMMARY:(.+?)\r?\n/) || [])[1]
-              : null // Om ingen match = null
-          )
-          .filter(Boolean), // Tar bort alla null eller tomma värden. Resultatet blir en lista med dagens händelser.
-
-		// Datumformat, just nu t.ex => "25-09-29"
-        dateString = new Intl.DateTimeFormat("sv-SE", {
-          timeZone: tz,
-          year: "2-digit",
-          month: "2-digit",
-          day: "numeric",
-        }).format(date);
-
-  	document.querySelector(".pasResult").innerHTML = hits[0]
-		? `${dateString} <strong>${hits.join(", ")}</strong>`
-		: `${dateString} finns inget i Pastafarian-kalendern.`;
-})();
+observer.observe(document.body, {childList: true, subtree: true});

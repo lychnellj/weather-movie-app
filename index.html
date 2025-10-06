@@ -3,47 +3,49 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="style.css" />
+		<link href="https://fonts.googleapis.com/css2?family=Sour+Gummy" rel="stylesheet" />
+		<link rel="icon" type="image/x-icon" href="src/images/favicon.png">
+		<link rel="stylesheet" href="main.css" />
 		<title>Forecast & Chill</title>
 	</head>
-	
-	<body>
-	<div class="pasResult"></div>
 
+	<body>
+		<header>
+			<a href=".">
+				<img src="src/images/logo.png" height="748" width="2130" alt="Forecast & Chill logo" class="logo" loading="lazy" />
+			</a>
+		</header>
+		<audio id="startUpSound" src="src/sound/wow.mp3"></audio>
 		<main class="container">
-			<h1>Forecast & Chill</h1>
 			<div class="locationBox">
 				<label>
-					<span>📍 Plats</span>
-					<div class="search-container">
-						<input type="text" class="cityInput" placeholder="Sök plats..." />
+					<span class="locationLabel">📍 Plats</span>
+					<div class="locationError"></div>
+					<div class="searchContainer">
+						<div class="innerSearch">
+							<input type="text" class="cityInput" placeholder="Sök plats..." />
+							<button class="fetchBtn">Hämta plats</button>
+						</div>
 						<ul class="dropdown"></ul>
-						<button class="fetchBtn">Hämta plats</button>
 					</div>
 				</label>
 			</div>
 			<div class="weatherBox">
-				<div>
-					<p class="goodBadWeather"></p>
-				</div>
-				<span>Väder</span>
-				<table>
-					<tr>
-						<th>Klockslag</th>
-						<th>Temperatur</th>
-						<th>Nederbörd</th>
-						<th>Vind (ms/s)</th>
-						<th>Väder</th>
-					</tr>
-					<tbody class="tableWeatherData"></tbody>
-				</table>
+				<div class="tableWeatherData"></div>
+				<div class="goodBadWeather hidden"></div>
 			</div>
 			<div class="suggBox">
-				<span>Förslag</span>
-				<button class = "suggBtn">Nya förslag</button>
 				<div class="moviesContainer"></div>
+				<button class="suggBtn">Nya förslag</button>
 			</div>
 		</main>
+		<footer>
+			<div class="pasBox">
+				<span>Glöm inte dagens högtid:</span>
+				<div class="pasResult"></div>
+				<span>R'amen!</span>
+			</div>
+		</footer>
 		<script type="module" src="src/script.js"></script>
 	</body>
 </html>
