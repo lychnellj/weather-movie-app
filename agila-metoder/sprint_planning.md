@@ -8,4 +8,4 @@
 ![Skärmdump på vår planering](/assets/week2-planning.png "Sprintplanering vecka 2")
 
 ## Vecka 3
-![Skärmdump på vår planering](vecka1_planning.jpg "Sprintplanering vecka 3")
+![Skärmdump på vår planering](/assets/week3-planning.png "Sprintplanering vecka 3")
