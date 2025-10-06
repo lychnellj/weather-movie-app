@@ -6,7 +6,7 @@
         min-width: 25%;
         height: auto;
     }
-    
+
 
     main {
         margin-left: variables.$baseMargin * 4;
@@ -20,9 +20,14 @@
     .locationBox {
 
         label {
+            display: flex;
+            flex-direction: column;
+            justify-items: center;
+            align-items: center;
+
             .locationLabel {
                 font-size: 2rem;
-                justify-self: center;
+                //justify-self: center;
 
             }
 
@@ -33,7 +38,7 @@
                     .cityInput {
                         font-size: 1.5rem;
                         text-indent: 20px;
-                        width: 680px;
+                        width: 400px;
                     }
 
                     .fetchBtn {
@@ -52,7 +57,7 @@
     }
 
     .dropdown {
-        width: 880px;
+        width: 600px;
         justify-self: center;
 
         li {
