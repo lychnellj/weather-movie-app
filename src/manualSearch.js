@@ -100,8 +100,6 @@ cityInput.addEventListener("input", function () {
 		li.addEventListener("click", async function () {
 			cityInput.value = this.textContent;
 			dropdown.style.display = "none";
-			// locationLabel.textContent = "📍 " + this.textContent;
-			//cityInput.value = "";
 		});
 
 		// lägger till <li> i dropdownlistan
@@ -169,7 +167,6 @@ fetchBtn.addEventListener("click", async function () {
 
 	// om ingen stad vald avbryt
 	if (!city) {
-		//console.log("Ingen stad vald.");
 		locationError.innerHTML = `<span class="error">Ingen stad vald.</span>`;
 		return;
 	}
@@ -185,16 +182,14 @@ fetchBtn.addEventListener("click", async function () {
 		const priorityEntry = getPriorityWeather(forecast)
 
 		const weatherBox = document.querySelector(".weatherBox");
-		//weatherBox.style.display = "block";
-		// renderWeatherStatus(forecast);
-		renderWeatherTable(priorityEntry);
 
-		// forecast.forEach((entry) => {
-		// 	console.log(`Tid: ${entry.time}, Temp: ${entry.temperature}°C, Nederbörd: ${entry.rainAndSnow} mm, Vind: ${entry.windSpeed} m/s`);
-		// });
-	} else {
+		renderWeatherTable(priorityEntry);
+	} 
+	
+	else {
 		console.log("Ingen träff");
 	}
+	
 	cityInput.value = "";
 	locationError.innerHTML = "";
 });

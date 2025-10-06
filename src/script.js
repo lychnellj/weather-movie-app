@@ -3,7 +3,6 @@ import { displayMovie, mayThe4Th, findRandomMovies } from "./movieFinder.js";
 import { fetchICS, parseEvents, filterToday, getTodayEvent } from "./pastaCal.js";
 import { cleanCityList, loadSwedenCities } from "./manualSearch.js";
 
-
 window.addEventListener("DOMContentLoaded", () =>{
 	const audio = document.getElementById("startUpSound");
 	if (audio)
@@ -29,3 +28,20 @@ async function renderPastafarianCalendar() {
 }
 
 renderPastafarianCalendar();
+
+// ändrar details-taggar så dom öppnas automatiskt vid desktopläge
+function openDetails() {
+	const isDesktop = window.matchMedia('(min-width: 1025px)').matches;
+	document.querySelectorAll('details').forEach(details => {
+		details.open = isDesktop;
+	});
+}
+
+window.addEventListener('resize', openDetails);
+window.addEventListener('DOMContentLoaded', openDetails);
+// kollar om ändringar sker och kör openDetails
+const observer = new MutationObserver(() => {
+	openDetails();
+});
+
+observer.observe(document.body, {childList: true, subtree: true});

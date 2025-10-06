@@ -43,7 +43,6 @@ async function showPosition(position) {
 
 	const forecast = await getWeather(latitude, longitude);
 	const priorityEntry = getPriorityWeather(forecast)
-	// weatherBox.style.display = "block";
 
 	renderWeatherTable(priorityEntry);
 }
@@ -64,7 +63,6 @@ function showError(error) {
 }
 // skapar en span med felmeddelandet vid fel
 function showApiError(message) {
-	locationError.style.display = "block";
 	locationError.innerHTML = `<span class="error">${message}</span>`;
 }
 
@@ -203,7 +201,8 @@ async function getWeather(latitude, longitude) {
 		const times = timesArray.slice(startIndex - 1, startIndex + 1);
 		const temps = weatherData.hourly.temperature_2m.slice(startIndex - 1, startIndex + 1);
 		const precipitation = weatherData.hourly.precipitation.slice(startIndex - 1, startIndex + 1);
-		const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); // fullösning för tidzoner, se över sen? Förlåt Jenni
+		// fullösning för tidzoner, förlåt Jenni ;_;
+		const wind = weatherData.hourly.wind_speed_10m.slice(startIndex - 1, startIndex + 1); 
 		const wCodes = weatherData.hourly.weathercode.slice(startIndex - 1, startIndex + 1);
 
 		// placerar respons i objects
@@ -218,7 +217,8 @@ async function getWeather(latitude, longitude) {
 	} catch (error) {
 		console.error("Fel vid hämtning av väder:", error);
 		showApiError("Kunde inte hämta koordinater för platsen.");
-		return dummyWeather; // returnerar fakedatan om det blir fel
+		// returnerar fakedatan om det blir fel
+		return dummyWeather; 
 	}
 }
 
@@ -228,10 +228,10 @@ const goodBadWeatherBox = document.querySelector(".goodBadWeather");
 const tableWeatherData = document.querySelector(".tableWeatherData");
 
 function getPriorityWeather(forecast) {
-	//Går igenom listan av forecasts (...), gör en lista av windSpeeds, kollar största värdet på windSpeed 
+	// går igenom listan av forecasts (...), gör en lista av windSpeeds, kollar största värdet på windSpeed 
 	const maxWindSpeed = Math.max(...forecast.map(f => f.windSpeed));
 	if (maxWindSpeed > 14) {
-		//returnerar forecasten med högst windSpeed om windSpeed > 1
+		// returnerar forecasten med högst windSpeed om windSpeed > 1
 		return forecast.find(f => f.windSpeed === maxWindSpeed);
 	}
 	const maxWeatherCode = Math.max(...forecast.map(f => f.weatherCodes));
@@ -239,8 +239,10 @@ function getPriorityWeather(forecast) {
 }
 
 function renderWeatherTable(priorityEntry) {
-	tableWeatherData.innerHTML = ""; // rensa tidigare väderdata
-	goodBadWeatherBox.classList.add("hidden"); // lägger till hidden classen som default för goodbadweatherbox
+	// rensa tidigare väderdata
+	tableWeatherData.innerHTML = ""; 
+	// lägger till hidden classen som default för goodbadweatherbox
+	goodBadWeatherBox.classList.add("hidden"); 
 
 	if(priorityEntry) {
 		let gifFile = wCodesGif.get(priorityEntry.weatherCodes) || "default.gif"; 
@@ -251,20 +253,22 @@ function renderWeatherTable(priorityEntry) {
 		console.log(priorityEntry)
 		const blockHtml = `
         <div class="hourHeader">
-		<div class="hourText">
-          	<span class="time">${priorityEntry.time.slice(11, 16)}</span>
-          	<span class="condition">${wCodesMap.get(priorityEntry.weatherCodes)}</span>
-		  </div>
-		  <img src="src/images/${gifFile}" alt="söt gif av vädret" class="weatherGif" />
+			<div class="hourText">
+				<span class="time">${priorityEntry.time.slice(11, 16)}</span>
+				<span class="condition">${wCodesMap.get(priorityEntry.weatherCodes)}</span>
+			</div>
+			<img src="src/images/${gifFile}" alt="söt gif av vädret" class="weatherGif" />
         </div>
 		<details>
-        <summary class="hourParams">Mer info</summary>
-          <p>Temp: ${priorityEntry.temperature} °C</p>
-          <p>Nederbörd: ${priorityEntry.rainAndSnow} mm</p>
-          <p>Vind: ${priorityEntry.windSpeed} m/s</p>
+			<summary class="hourParams">Mer info</summary>
+				<div class="hourInfo">
+				<p>Temp: ${priorityEntry.temperature} °C</p>
+				<p>Nederbörd: ${priorityEntry.rainAndSnow} mm</p>
+				<p>Vind: ${priorityEntry.windSpeed} m/s</p>
+				</div>
 		</details>
     `;
-		tableWeatherData.innerHTML += blockHtml;
+		tableWeatherData.insertAdjacentHTML("beforeend", blockHtml);
 	};
 
 	const wCodes = priorityEntry?.weatherCodes;
@@ -281,6 +285,7 @@ function renderWeatherTable(priorityEntry) {
 		const randomGrass = touchGrass[Math.floor(Math.random() * touchGrass.length)];
 		goodBadWeatherBox.innerHTML = `<p>${randomGrass}</p>`;
 		const container = document.querySelector(".moviesContainer");
-		container.innerHTML = ""; // rensar filmer ifall man haft dåligt väder först
+		// rensar filmer ifall man haft dåligt väder först
+		container.innerHTML = ""; 
 	}
 }

@@ -2,7 +2,6 @@ import { DEVELOPMENT } from "./config.js";
 export { displayMovie, mayThe4Th, findRandomMovies, getPosterUrl };
 
 // dummy data
-
 const dummyMovies = [
 	{
 		title: "Dummy Movie 1",
@@ -131,7 +130,6 @@ async function findRandomMovies() {
 				// visar filmerna och info
 				displayMovie(twoRandomSwMovies);
 			} else {
-				// console.log("Inte tillräckligt med Star Wars-filmer hittades.");
 				showMovieError("Inte tillräckligt med Star Wars-filmer hittades");
 				displayMovie(dummyMovies);
 			}
