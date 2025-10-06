@@ -8,7 +8,7 @@ async function fetchICS(url) {
 			throw new Error(`Kunde inte hämta ${url}: ${response.status}`);
 		}
 		const txt = await response.text();
-		return txt.replace(/\r?\n[ \t]/g, ""); // clean folded lines
+		return txt.replace(/\r?\n[ \t]/g, "");
 	} catch (err) {
 		console.error("Fel vid hämtning av ICS:", err);
 		return "";

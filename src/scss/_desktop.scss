@@ -1,0 +1,180 @@
+@use "./variables";
+
+@media (min-width: 1025px) {
+
+    .logo {
+        min-width: 25%;
+        height: auto;
+    }
+
+    main {
+        margin-left: variables.$baseMargin * 4;
+        margin-right: variables.$baseMargin * 4;
+    }
+    
+ /* ----------Sökruta--------------------- */
+    .locationBox {
+        label {
+            .locationLabel {
+                font-size: 3rem;
+                justify-self: center;
+
+            }
+
+            .searchContainer {
+                .innerSearch {
+                    justify-self: center;
+
+                    .cityInput {
+                        font-size: 3rem;
+                        text-indent: 20px;
+                        width: 680px;
+                    }
+
+                    .fetchBtn {
+                        font-size: 3rem;
+                        width: 335px;
+                    }
+                }
+            }
+        }
+
+        .locationError {
+            display: flex;
+            font-size: 3rem;
+            justify-content: center;
+        }
+    }
+    
+    .dropdown {
+        width: 1050px;
+        justify-self: center;
+
+        li {
+            font-size: 2.5rem;
+        }
+    }
+
+    /* ----------Väderdisplay--------------------- */
+    .weatherBox {
+        justify-self: center;
+        width: 80%;
+
+        .tableWeatherData {
+            .hourHeader {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+
+                .hourText {
+                    justify-self: center;
+                }
+
+                .weatherGif {
+                    height: 400px;
+                }
+
+                .time {
+                    font-size: 6rem;
+                    padding: 0;
+                    margin: 0;
+                }
+
+                .condition {
+                    font-size: 4rem;
+                    padding: 0;
+                    margin: 0;
+                }
+            }
+
+            details {
+                font-size: 2.5rem;
+
+                .hourInfo {
+                    display: flex;
+                    flex-direction: row;
+                    white-space: nowrap;
+                    flex-wrap: nowrap;
+                    justify-content: space-evenly;
+                }
+            }
+        }
+
+        .goodBadWeather {
+            font-size: 5rem;
+        }
+    }
+
+    /* ----------Filmdisplay--------------------- */
+    .suggBox {
+        .moviesContainer {
+            width: 100%;
+
+            .classMovieCard {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 150px 1fr;
+                align-items: start;
+                column-gap: variables.$baseMargin * 3;
+                min-height: 400px;
+                padding: 0 45px;
+                padding-bottom: 25px;
+                border: dotted 10px white;
+
+                h2 {
+                    grid-column: 1 / span 2;
+                    grid-row: 1;
+                    font-size: 3rem;
+                    justify-self: center;
+                    align-self: center;
+                }
+
+                img {
+                    grid-column: 1;
+                    grid-row: 2;
+                    min-width: 100%;
+                    height: auto;
+                    justify-self: center;
+                }
+
+                details {
+                    grid-column: 2;
+                    grid-row: 2;
+                    align-self: start;
+                    min-width: auto;
+                    margin-top: 0;
+                    margin-bottom: auto;
+                    font-size: 2rem;
+                }
+            }
+        }
+
+        .suggBtn {
+            width: 300px;
+            height: 100px;
+            font-size: 3rem;
+        }
+    }
+
+    details {
+        summary {
+            display: none;
+        }
+    }
+
+    footer {
+        .pasBox {
+            span {
+                font-size: 3rem;
+            }
+
+            .pasResult {
+                font-size: 4rem;
+            }
+        }
+    }
+}
