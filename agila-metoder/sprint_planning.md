@@ -12,4 +12,4 @@
 
 ## Vecka 3
 
-![Skärmdump på vår planering](vecka1_planning.jpg "Sprintplanering vecka 3")
+![Skärmdump på vår planering](/agila-metoder/week3-planning.png "Sprintplanering vecka 3")
