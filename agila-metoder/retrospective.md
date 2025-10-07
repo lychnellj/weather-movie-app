@@ -1,13 +1,14 @@
 # Retrospektiv
 > Här dokumenterar ni era retrospektiv. Ni kan använda mallen eller göra på eget sätt.
 
-## fre 25 september
+## fre 26 september
 Vi körde "Glad, Sad, Mad".
 
-Glad: bra samarbete
+Glad: Bra samarbete, alla bidrar, trevligt socialt, har fått mycket gjort.
 
-Sad: tog längre tid än planerat att få geolocation att fungera.
+Sad: Ingenting.
 
-Mad: Otydliga instruktioner från Jenni ang. geolocation gjorde att vi fastnade med det längre än tänkt.
+Mad: Kanske lite väl tung första uppgift. Vi lyckas få arbetet gjort men vi är inte säkra på hur mycket vi lär oss om grunderna. Hade kanske varit bra med en vecka dedikerad till js innan uppgiften drog igång.
 
-Lärdomar till nästa vecka: be om hjälp tidigare och använd handledningspassen, sitt inte fast med problemen själv för länge - våga fråga!
+## fre 3 oktober
+Vi är väldigt nöjda med vår prestation och det sociala samspelet i gruppen.
