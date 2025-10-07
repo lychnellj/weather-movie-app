@@ -44,7 +44,7 @@ Vi valde att hålla oss till endast dessa tre och inte blanda in Vite då vi int
 
 Sidan får fullpott i Lighthouse i Google Chrome när man testar för accessibility för mobil, tablet samt desktop.  
 
-![accessbility screenshot from Lighthouse](/assets/accessibilityCheck.png)
+![accessibility screenshot from Lighthouse](/assets/accessibilityCheck.png)
 
 ## Lärdomar
 
