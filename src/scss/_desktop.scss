@@ -9,8 +9,8 @@
 
 
     main {
-        margin-left: variables.$baseMargin * 4;
-        margin-right: variables.$baseMargin * 4;
+        margin-left: variables.$baseMargin * 10;
+        margin-right: variables.$baseMargin * 10;
         display: grid;
         place-items: center;
         min-width: 100vh;
@@ -147,7 +147,7 @@
                 img {
                     grid-column: 1;
                     grid-row: 2;
-                    min-width: 100%;
+                    min-width: 30%;
                     height: auto;
                     justify-self: center;
                 }
@@ -159,7 +159,7 @@
                     min-width: auto;
                     margin-top: 0;
                     margin-bottom: auto;
-                    font-size: 1rem;
+                    font-size: clamp(0.9rem, 0.5rem + 0.5vw, 1.2rem);
                 }
             }
         }
