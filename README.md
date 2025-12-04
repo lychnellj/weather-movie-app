@@ -7,7 +7,7 @@ Syftet med uppgiften var att lära sig hur man skaffar och använder en API-nyck
 
 Vi skulle också öva på att samarbeta i grupp med agila metoder, läsa och ge feedback på andras kod, och dela upp stora uppgifter i mindre delar.
 
->[Demo av hemsidan](https://medieinstitutet.github.io/sys25d-html-inl-3-galactic-core/)
+>[Demo av hemsidan](https://lychnellj.github.io/weather-movie-app/)
 
 ## Sidan är designad och kodad av:
 
